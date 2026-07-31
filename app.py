@@ -62,7 +62,9 @@ from flask import session, flash, redirect, url_for
 app = Flask(__name__)
 app.config.from_object(Config)
 
-app.secret_key = "schoolpay_secret_2026"
+app.secret_key = app.config["SECRET_KEY"]
+app.config.from_object(Config)
+print("DATABASE :", app.config["SQLALCHEMY_DATABASE_URI"])
 
 db.init_app(app)
 
@@ -79,6 +81,8 @@ def enregistrer_action(action):
 
     db.session.add(historique)
     db.session.commit()
+
+
 
 # =====================================
 # ACCUEIL
@@ -101,31 +105,45 @@ def login():
 
     if request.method == "POST":
 
-        username = request.form["username"].strip()
-        password = request.form["password"]
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        print("=" * 50)
+        print("Tentative de connexion")
+        print("Nom d'utilisateur :", username)
 
         utilisateur = Utilisateur.query.filter_by(
             username=username
         ).first()
 
-        if utilisateur and check_password_hash(
-            utilisateur.password,
-            password
-        ):
+        if utilisateur:
+            print("Utilisateur trouvé :", utilisateur.username)
+            print("Rôle :", utilisateur.role)
+            print("Hash enregistré :", utilisateur.password)
 
-            # Création de la session
-            session["user"] = utilisateur.username
-            session["role"] = utilisateur.role
+            if check_password_hash(utilisateur.password, password):
 
-            # Historique (si la fonction existe)
-            # enregistrer_action("Connexion au système")
+                print("Mot de passe correct.")
 
-            flash(
-                f"Bienvenue {utilisateur.username} ({utilisateur.role})",
-                "success"
-            )
+                # Création de la session
+                session["user"] = utilisateur.username
+                session["role"] = utilisateur.role
 
-            return redirect(url_for("dashboard"))
+                # Historique (optionnel)
+                # enregistrer_action("Connexion au système")
+
+                flash(
+                    f"Bienvenue {utilisateur.username} ({utilisateur.role})",
+                    "success"
+                )
+
+                return redirect(url_for("dashboard"))
+
+            else:
+                print("Mot de passe incorrect.")
+
+        else:
+            print("Utilisateur introuvable.")
 
         flash(
             "Nom d'utilisateur ou mot de passe incorrect.",

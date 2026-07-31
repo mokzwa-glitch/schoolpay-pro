@@ -1,7 +1,8 @@
 import os
 
 class Config:
-
+    # Utilise DATABASE_URL si elle existe (Render/Railway),
+    # sinon utilise la base locale.
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
         "mysql+pymysql://root:@localhost/schoolpay"
@@ -11,5 +12,5 @@ class Config:
 
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
-        "schoolpay-secret"
+        "schoolpay-secret-2026"
     )
