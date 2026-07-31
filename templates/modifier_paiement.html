@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier un paiement{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning text-dark">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                        Modifier un paiement
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Élève
+
+                            </label>
+
+                            <select
+                                name="eleve_id"
+                                class="form-select"
+                                required>
+
+                                {% for e in eleves %}
+
+                                <option
+                                    value="{{ e.id }}"
+                                    {% if e.id == paiement.eleve_id %}selected{% endif %}>
+
+                                    {{ e.matricule }}
+                                    -
+                                    {{ e.nom }}
+                                    {{ e.postnom }}
+                                    {{ e.prenom }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Montant ($)
+
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                name="montant"
+                                class="form-control"
+                                value="{{ paiement.montant }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Motif du paiement
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="motif"
+                                class="form-control"
+                                value="{{ paiement.motif }}"
+                                placeholder="Exemple : Frais scolaires"
+                                required>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a
+                                href="{{ url_for('paiements') }}"
+                                class="btn btn-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Retour
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-success">
+
+                                <i class="bi bi-save"></i>
+
+                                Enregistrer les modifications
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Connexion | SchoolPay Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-primary">
+
+<div class="container">
+
+    <div class="row justify-content-center align-items-center vh-100">
+
+        <div class="col-md-5">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-4">
+
+                        <i class="bi bi-bank display-1 text-primary"></i>
+
+                        <h2 class="mt-3">
+
+                            SchoolPay Pro
+
+                        </h2>
+
+                        <p class="text-muted">
+
+                            Gestion des frais scolaires
+
+                        </p>
+
+                    </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+
+                        {% if messages %}
+
+                            {% for category, message in messages %}
+
+                            <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                                {{ message }}
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                                </button>
+
+                            </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    {% endwith %}
+
+                    <form method="POST">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Nom d'utilisateur
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-person-fill"></i>
+
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="username"
+                                    class="form-control"
+                                    required
+                                    autofocus>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Mot de passe
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-lock-fill"></i>
+
+                                </span>
+
+                                <input
+                                    type="password"
+                                    name="password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            Se connecter
+
+                        </button>
+
+                    </form>
+
+                    <hr>
+
+                    <div class="text-center text-muted">
+
+                        Version 1.0<br>
+
+                        © 2026 SchoolPay Pro
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier une classe{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning">
+
+            <h4>Modifier une classe</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for categorie, message in messages %}
+                        <div class="alert alert-{{ categorie }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+                <div class="mb-3">
+
+                    <label>Nom de la classe</label>
+
+                    <input
+                        type="text"
+                        name="nom"
+                        class="form-control"
+                        value="{{ classe.nom }}"
+                        required>
+
+                </div>
+
+                <button class="btn btn-success">
+
+                    Enregistrer
+
+                </button>
+
+                <a href="{{ url_for('classes') }}" class="btn btn-secondary">
+
+                    Retour
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des paiements{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>
+            <i class="bi bi-cash-stack"></i>
+            Gestion des paiements
+        </h2>
+
+        <div>
+
+            <a href="{{ url_for('rapport_paiements') }}" class="btn btn-danger">
+                <i class="bi bi-file-earmark-pdf"></i>
+                Rapport PDF
+            </a>
+
+            <a href="{{ url_for('export_excel') }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i>
+                Export Excel
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Recherche -->
+
+    <form method="GET" action="{{ url_for('paiements') }}" class="mb-4">
+
+        <div class="input-group">
+
+            <input
+                type="text"
+                name="recherche"
+                class="form-control"
+                placeholder="Rechercher un élève ou un motif..."
+                value="{{ request.args.get('recherche','') }}">
+
+            <button class="btn btn-primary">
+
+                <i class="bi bi-search"></i>
+
+                Rechercher
+
+            </button>
+
+            <a href="{{ url_for('paiements') }}" class="btn btn-secondary">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Actualiser
+
+            </a>
+
+        </div>
+
+    </form>
+
+    <!-- Statistiques -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card bg-primary text-white shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total des paiements</h6>
+
+                    <h2>{{ total_paiements }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card bg-success text-white shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Montant total encaissé</h6>
+
+                    <h2>{{ montant_total }} $</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Formulaire -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Enregistrer un paiement
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-2">
+
+                        <select
+                            name="eleve_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">Choisir un élève</option>
+
+                            {% for e in eleves %}
+
+                            <option value="{{ e.id }}">
+
+                                {{ e.matricule }} -
+                                {{ e.nom }}
+                                {{ e.postnom }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0.01"
+                            name="montant"
+                            class="form-control"
+                            placeholder="Montant"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-3 mb-2">
+
+                        <input
+                            type="text"
+                            name="motif"
+                            class="form-control"
+                            placeholder="Motif"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-2 mb-2">
+
+                        <button class="btn btn-success w-100">
+
+                            <i class="bi bi-save"></i>
+
+                            Enregistrer
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Tableau -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white d-flex justify-content-between">
+
+            <span>
+
+                <i class="bi bi-table"></i>
+
+                Liste des paiements
+
+            </span>
+
+            <span class="badge bg-light text-dark">
+
+                {{ paiements|length }} paiement(s)
+
+            </span>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>N°</th>
+                        <th>Élève</th>
+                        <th>Montant</th>
+                        <th>Motif</th>
+                        <th>Date</th>
+                        <th class="text-center">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for p in paiements %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>
+
+                            <strong>
+
+                                {{ p.eleve.nom }}
+                                {{ p.eleve.postnom }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ p.eleve.matricule }}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                {{ p.montant }} $
+
+                            </span>
+
+                        </td>
+
+                        <td>{{ p.motif }}</td>
+
+                        <td>{{ p.date_paiement.strftime('%d/%m/%Y') }}</td>
+
+                        <td class="text-center">
+
+                            <a
+                                href="{{ url_for('modifier_paiement', id=p.id) }}"
+                                class="btn btn-warning btn-sm"
+                                title="Modifier">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('recu', id=p.id) }}"
+                                class="btn btn-primary btn-sm"
+                                title="Imprimer">
+
+                                <i class="bi bi-printer"></i>
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('supprimer_paiement', id=p.id) }}"
+                                class="btn btn-danger btn-sm"
+                                title="Supprimer"
+                                onclick="return confirm('Supprimer ce paiement ?');">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center text-muted">
+
+                            Aucun paiement enregistré.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
