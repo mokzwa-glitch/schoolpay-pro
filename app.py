@@ -2236,7 +2236,7 @@ def parametres():
 
 
 # ==================================================
-# SAUVEGARDE
+# SAUVEGARDE DE LA BASE DE DONNÉES
 # ==================================================
 
 @app.route("/backup", methods=["GET", "POST"])
@@ -2247,28 +2247,186 @@ def backup():
     if request.method == "POST":
 
         try:
-
+            # Nom du fichier
             nom = f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+
+            # Dossier de sauvegarde
+            os.makedirs(
+                app.config["BACKUP_FOLDER"],
+                exist_ok=True
+            )
 
             chemin = os.path.join(
                 app.config["BACKUP_FOLDER"],
                 nom
             )
 
-            with open(chemin, "w", encoding="utf-8") as fichier:
+            # Connexion SQLAlchemy
+            connexion = db.engine.connect()
+
+            # Récupérer les tables MySQL
+            result = connexion.execute(
+                text("SHOW TABLES")
+            )
+
+            tables = [
+                ligne[0]
+                for ligne in result
+            ]
+
+            with open(
+                chemin,
+                "w",
+                encoding="utf-8"
+            ) as fichier:
 
                 fichier.write(
-                    "-- Sauvegarde SchoolPay Pro\n"
+                    "-- ========================================\n"
                 )
 
                 fichier.write(
-                    f"-- {datetime.now()}\n"
+                    "-- SAUVEGARDE SCHOOLPAY PRO\n"
                 )
+
+                fichier.write(
+                    f"-- Date : {datetime.now()}\n"
+                )
+
+                fichier.write(
+                    "-- ========================================\n\n"
+                )
+
+                # --------------------------------------
+                # SAUVEGARDE DE CHAQUE TABLE
+                # --------------------------------------
+
+                for table in tables:
+
+                    fichier.write(
+                        f"\n-- ========================================\n"
+                        f"-- TABLE : {table}\n"
+                        f"-- ========================================\n\n"
+                    )
+
+                    # Structure de la table
+                    structure = connexion.execute(
+                        text(f"SHOW CREATE TABLE `{table}`")
+                    ).fetchone()
+
+                    if structure:
+
+                        create_table = structure[1]
+
+                        fichier.write(
+                            f"DROP TABLE IF EXISTS `{table}`;\n"
+                        )
+
+                        fichier.write(
+                            create_table + ";\n\n"
+                        )
+
+                    # Récupérer les données
+                    donnees = connexion.execute(
+                        text(f"SELECT * FROM `{table}`")
+                    )
+
+                    colonnes = list(
+                        donnees.keys()
+                    )
+
+                    for ligne in donnees:
+
+                        valeurs = []
+
+                        for valeur in ligne:
+
+                            if valeur is None:
+
+                                valeurs.append("NULL")
+
+                            elif isinstance(
+                                valeur,
+                                (int, float)
+                            ):
+
+                                valeurs.append(
+                                    str(valeur)
+                                )
+
+                            elif isinstance(
+                                valeur,
+                                bytes
+                            ):
+
+                                valeurs.append(
+                                    "X'" +
+                                    valeur.hex() +
+                                    "'"
+                                )
+
+                            else:
+
+                                texte = str(
+                                    valeur
+                                )
+
+                                texte = texte.replace(
+                                    "\\",
+                                    "\\\\"
+                                )
+
+                                texte = texte.replace(
+                                    "'",
+                                    "''"
+                                )
+
+                                texte = texte.replace(
+                                    "\n",
+                                    "\\n"
+                                )
+
+                                texte = texte.replace(
+                                    "\r",
+                                    "\\r"
+                                )
+
+                                valeurs.append(
+                                    "'" +
+                                    texte +
+                                    "'"
+                                )
+
+                        colonnes_sql = ", ".join(
+                            f"`{colonne}`"
+                            for colonne in colonnes
+                        )
+
+                        valeurs_sql = ", ".join(
+                            valeurs
+                        )
+
+                        fichier.write(
+                            f"INSERT INTO `{table}` "
+                            f"({colonnes_sql}) "
+                            f"VALUES ({valeurs_sql});\n"
+                        )
+
+                    fichier.write("\n")
+
+            connexion.close()
+
+            # --------------------------------------
+            # TAILLE DU FICHIER
+            # --------------------------------------
 
             taille = round(
                 os.path.getsize(chemin) / 1024,
                 2
             )
+
+            # --------------------------------------
+            # ENREGISTRER LA SAUVEGARDE
+            # --------------------------------------
 
             sauvegarde = Sauvegarde(
 
@@ -2280,7 +2438,9 @@ def backup():
 
             )
 
-            db.session.add(sauvegarde)
+            db.session.add(
+                sauvegarde
+            )
 
             db.session.commit()
 
@@ -2289,15 +2449,26 @@ def backup():
             )
 
             flash(
-                "Sauvegarde créée avec succès.",
+                "Sauvegarde de la base de données créée avec succès.",
                 "success"
             )
 
         except Exception as e:
 
-            flash(str(e), "danger")
+            db.session.rollback()
 
-        return redirect(url_for("backup"))
+            flash(
+                f"Erreur lors de la sauvegarde : {str(e)}",
+                "danger"
+            )
+
+        return redirect(
+            url_for("backup")
+        )
+
+    # --------------------------------------
+    # LISTE DES SAUVEGARDES
+    # --------------------------------------
 
     sauvegardes = Sauvegarde.query.order_by(
         Sauvegarde.date_sauvegarde.desc()
@@ -2309,89 +2480,30 @@ def backup():
     )
 
 
-@app.route("/telecharger_backup/<nom>")
+
+
+@app.route("/telecharger_backup/<path:nom>")
 @login_required
 @admin_required
 def telecharger_backup(nom):
 
     chemin = os.path.join(
-
         app.config["BACKUP_FOLDER"],
-
         nom
-
     )
 
-    return send_file(
+    if not os.path.isfile(chemin):
+        flash(
+            "La sauvegarde demandée n'existe pas.",
+            "danger"
+        )
+        return redirect(url_for("backup"))
 
+    return send_file(
         chemin,
-
-        as_attachment=True
-
+        as_attachment=True,
+        download_name=nom
     )
-
-@app.route("/export_excel")
-@login_required
-def export_excel():
-
-    wb = Workbook()
-
-    ws = wb.active
-
-    ws.title = "Paiements"
-
-    ws.append([
-
-        "Reçu",
-
-        "Élève",
-
-        "Motif",
-
-        "Montant",
-
-        "Date"
-
-    ])
-
-    for p in Paiement.query.order_by(
-
-        Paiement.date_paiement.desc()
-
-    ).all():
-
-        ws.append([
-
-            p.numero_recu,
-
-            f"{p.eleve.nom} {p.eleve.postnom}",
-
-            p.motif.nom,
-
-            p.montant,
-
-            p.date_paiement.strftime("%d/%m/%Y")
-
-        ])
-
-    fichier = os.path.join(
-
-        app.root_path,
-
-        "paiements.xlsx"
-
-    )
-
-    wb.save(fichier)
-
-    return send_file(
-
-        fichier,
-
-        as_attachment=True
-
-    )
-
 
 # ==================================================
 # A PROPOS
