@@ -1,142 +1,815 @@
 {% extends "base.html" %}
 
-{% block title %}Gestion des élèves{% endblock %}
+{% block title %}
+Gestion des élèves
+{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- ================================================== -->
+    <!-- TITRE -->
+    <!-- ================================================== -->
 
-        <h2>
-            <i class="bi bi-people-fill"></i>
-            Gestion des élèves
-        </h2>
+    <div class="row mb-4">
 
-        <a href="{{ url_for('imprimer_eleves') }}" class="btn btn-danger">
-            <i class="bi bi-printer"></i>
-            Imprimer la liste
-        </a>
+        <div class="col-md-8">
 
-    </div>
+            <h2 class="fw-bold text-primary">
 
-    <!-- Recherche -->
+                <i class="bi bi-mortarboard-fill"></i>
 
-    <form method="GET" action="{{ url_for('eleves') }}" class="mb-4">
+                Gestion des élèves
 
-        <div class="input-group">
+            </h2>
 
-            <input
-                type="text"
-                name="recherche"
-                class="form-control"
-                placeholder="Rechercher par matricule, nom, postnom ou prénom..."
-                value="{{ request.args.get('recherche','') }}">
+            <p class="text-muted">
 
-            <button class="btn btn-primary">
-                <i class="bi bi-search"></i>
-                Rechercher
-            </button>
+                Ajouter, modifier, rechercher et gérer les élèves.
 
-            <a href="{{ url_for('eleves') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-clockwise"></i>
-                Actualiser
+            </p>
+
+        </div>
+
+        <div class="col-md-4 text-end">
+
+            <a
+                href="{{ url_for('imprimer_eleves') }}"
+                class="btn btn-danger">
+
+                <i class="bi bi-printer-fill"></i>
+
+                Imprimer
+
             </a>
 
         </div>
 
-    </form>
+    </div>
 
-    <!-- Ajout -->
 
-    <div class="card shadow mb-4">
+    <!-- ================================================== -->
+    <!-- STATISTIQUES -->
+    <!-- ================================================== -->
+
+    <div class="row mb-4">
+
+        <!-- NOMBRE D'ÉLÈVES -->
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill fs-1 text-primary"></i>
+
+                    <h3 class="mt-3">
+
+                        {{ eleves|length }}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Élèves enregistrés
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLASSES -->
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-building fs-1 text-success"></i>
+
+                    <h3 class="mt-3">
+
+                        {{ classes|length }}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Classes
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PHOTOS -->
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-camera-fill fs-1 text-warning"></i>
+
+                    <h5 class="mt-3">
+
+                        Photos
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Gestion des photos
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CARTES -->
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-vcard-fill fs-1 text-danger"></i>
+
+                    <h5 class="mt-3">
+
+                        Cartes
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Cartes d'élèves
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- RECHERCHE -->
+    <!-- ================================================== -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <form
+                method="GET"
+                action="{{ url_for('eleves') }}">
+
+                <div class="row g-2">
+
+                    <div class="col-md-10">
+
+                        <label
+                            for="recherche"
+                            class="form-label fw-bold">
+
+                            Rechercher un élève
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="recherche"
+                            id="recherche"
+                            class="form-control"
+                            placeholder="Matricule, nom, postnom ou prénom..."
+                            value="{{ request.args.get('recherche', '') }}">
+
+                    </div>
+
+
+                    <div class="col-md-2 d-flex align-items-end">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+
+                            Rechercher
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- ÉLÈVES PAR CLASSE -->
+    <!-- ================================================== -->
+
+    <div class="card shadow border-0 mb-4">
 
         <div class="card-header bg-primary text-white">
 
-            <i class="bi bi-person-plus-fill"></i>
+            <h5 class="mb-0">
 
-            Ajouter un élève
+                <i class="bi bi-people-fill"></i>
+
+                Élèves par classe
+
+            </h5>
 
         </div>
 
         <div class="card-body">
 
-            <form method="POST">
+            <div class="row g-3">
+
+
+                <!-- ====================================== -->
+                <!-- TOUS LES ÉLÈVES -->
+                <!-- ====================================== -->
+
+                <div class="col-md-3">
+
+                    <a
+                        href="{{ url_for('eleves') }}"
+                        class="text-decoration-none">
+
+                        <div
+                            class="card h-100 border-0 shadow-sm
+                            {% if not classe_selectionnee %}
+                                bg-primary text-white
+                            {% endif %}">
+
+                            <div class="card-body text-center">
+
+                                <i
+                                    class="bi bi-people-fill fs-1
+                                    {% if classe_selectionnee %}
+                                        text-primary
+                                    {% endif %}">
+                                </i>
+
+                                <h6 class="mt-3">
+
+                                    Tous les élèves
+
+                                </h6>
+
+                                <h2 class="fw-bold">
+
+                                    {{ total_eleves }}
+
+                                </h2>
+
+                                <small>
+
+                                    Élève(s)
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+
+                <!-- ====================================== -->
+                <!-- CLASSES -->
+                <!-- ====================================== -->
+
+                {% for classe in classes %}
+
+                <div class="col-md-3">
+
+                    <a
+                        href="{{ url_for(
+                            'eleves',
+                            classe_id=classe.id
+                        ) }}"
+                        class="text-decoration-none">
+
+                        <div
+                            class="card h-100 border-0 shadow-sm
+                            {% if classe_selectionnee == classe.id %}
+                                bg-success text-white
+                            {% endif %}">
+
+                            <div class="card-body text-center">
+
+                                <i
+                                    class="bi bi-building fs-1
+                                    {% if classe_selectionnee != classe.id %}
+                                        text-success
+                                    {% endif %}">
+                                </i>
+
+                                <h6 class="mt-3">
+
+                                    {{ classe.nom }}
+
+                                </h6>
+
+                                <h2 class="fw-bold">
+
+                                    {{ nombres_par_classe.get(
+                                        classe.id,
+                                        0
+                                    ) }}
+
+                                </h2>
+
+                                <small>
+
+                                    Élève(s)
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- NOUVEL ÉLÈVE -->
+    <!-- ================================================== -->
+
+    <div class="card shadow-lg border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-person-plus-fill"></i>
+
+                Nouvel élève
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                autocomplete="off">
+
+
+                <!-- ====================================== -->
+                <!-- PHOTO + IDENTITÉ -->
+                <!-- ====================================== -->
+
+                <div class="row mb-4">
+
+
+                    <!-- PHOTO -->
+
+                    <div class="col-md-3 text-center">
+
+                        <img
+                            id="preview"
+                            src="{{ url_for(
+                                'static',
+                                filename='images/avatar.png'
+                            ) }}"
+                            class="img-thumbnail rounded-circle"
+                            style="
+                                width:170px;
+                                height:170px;
+                                object-fit:cover;
+                            "
+                            alt="Photo de l'élève">
+
+                        <br><br>
+
+                        <label
+                            for="photo"
+                            class="form-label fw-bold">
+
+                            Photo
+
+                        </label>
+
+                        <input
+                            type="file"
+                            name="photo"
+                            id="photo"
+                            class="form-control"
+                            accept="image/*">
+
+                    </div>
+
+
+                    <!-- INFORMATIONS DE BASE -->
+
+                    <div class="col-md-9">
+
+                        <div class="row">
+
+
+                            <!-- MATRICULE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="matricule"
+                                    class="form-label">
+
+                                    Matricule
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="matricule"
+                                    id="matricule"
+                                    class="form-control"
+                                    value="{{ matricule }}"
+                                    readonly>
+
+                            </div>
+
+
+                            <!-- NOM -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="nom"
+                                    class="form-label">
+
+                                    Nom
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="nom"
+                                    id="nom"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <!-- POSTNOM -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="postnom"
+                                    class="form-label">
+
+                                    Postnom
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="postnom"
+                                    id="postnom"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <!-- PRÉNOM -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="prenom"
+                                    class="form-label">
+
+                                    Prénom
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="prenom"
+                                    id="prenom"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <!-- SEXE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="sexe"
+                                    class="form-label">
+
+                                    Sexe
+
+                                </label>
+
+                                <select
+                                    name="sexe"
+                                    id="sexe"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="">
+
+                                        Choisir...
+
+                                    </option>
+
+                                    <option value="M">
+
+                                        Masculin
+
+                                    </option>
+
+                                    <option value="F">
+
+                                        Féminin
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- DATE NAISSANCE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label
+                                    for="date_naissance"
+                                    class="form-label">
+
+                                    Date de naissance
+
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="date_naissance"
+                                    id="date_naissance"
+                                    class="form-control">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================== -->
+                <!-- INFORMATIONS PERSONNELLES -->
+                <!-- ====================================== -->
 
                 <div class="row">
 
-                    <div class="col-md-2 mb-3">
+                    <!-- LIEU NAISSANCE -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="lieu_naissance"
+                            class="form-label">
+
+                            Lieu de naissance
+
+                        </label>
 
                         <input
                             type="text"
-                            name="matricule"
-                            class="form-control"
-                            placeholder="Matricule"
-                            required>
+                            name="lieu_naissance"
+                            id="lieu_naissance"
+                            class="form-control">
 
                     </div>
 
-                    <div class="col-md-2 mb-3">
+
+                    <!-- TÉLÉPHONE -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="telephone"
+                            class="form-label">
+
+                            Téléphone
+
+                        </label>
 
                         <input
                             type="text"
-                            name="nom"
-                            class="form-control"
-                            placeholder="Nom"
-                            required>
+                            name="telephone"
+                            id="telephone"
+                            class="form-control">
 
                     </div>
 
-                    <div class="col-md-2 mb-3">
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="email"
+                            class="form-label">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="form-control">
+
+                    </div>
+
+
+                    <!-- ADRESSE -->
+
+                    <div class="col-md-12 mb-3">
+
+                        <label
+                            for="adresse"
+                            class="form-label">
+
+                            Adresse
+
+                        </label>
+
+                        <textarea
+                            name="adresse"
+                            id="adresse"
+                            rows="2"
+                            class="form-control"></textarea>
+
+                    </div>
+
+                </div>
+
+                                <!-- ====================================== -->
+                <!-- INFORMATIONS PARENT / TUTEUR -->
+                <!-- ====================================== -->
+
+                <div class="row">
+
+                    <!-- PARENT -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="parent"
+                            class="form-label">
+
+                            Nom du parent / Tuteur
+
+                        </label>
 
                         <input
                             type="text"
-                            name="postnom"
+                            name="parent"
+                            id="parent"
                             class="form-control"
-                            placeholder="Postnom"
-                            required>
+                            placeholder="Nom complet du parent">
 
                     </div>
 
-                    <div class="col-md-2 mb-3">
+
+                    <!-- TÉLÉPHONE PARENT -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="telephone_parent"
+                            class="form-label">
+
+                            Téléphone du parent
+
+                        </label>
 
                         <input
                             type="text"
-                            name="prenom"
+                            name="telephone_parent"
+                            id="telephone_parent"
                             class="form-control"
-                            placeholder="Prénom"
-                            required>
+                            placeholder="+243 ...">
 
                     </div>
 
-                    <div class="col-md-2 mb-3">
 
-                        <select
-                            name="sexe"
-                            class="form-select"
-                            required>
+                    <!-- PROFESSION PARENT -->
 
-                            <option value="">Sexe</option>
-                            <option value="M">Masculin</option>
-                            <option value="F">Féminin</option>
+                    <div class="col-md-4 mb-3">
 
-                        </select>
+                        <label
+                            for="profession_parent"
+                            class="form-label">
+
+                            Profession du parent
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="profession_parent"
+                            id="profession_parent"
+                            class="form-control">
 
                     </div>
 
-                    <div class="col-md-2 mb-3">
+                </div>
+
+
+                <!-- ====================================== -->
+                <!-- INFORMATIONS SCOLAIRES -->
+                <!-- ====================================== -->
+
+                <div class="row">
+
+                    <!-- CLASSE -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="classe_id"
+                            class="form-label">
+
+                            Classe
+
+                        </label>
 
                         <select
                             name="classe_id"
+                            id="classe_id"
                             class="form-select"
                             required>
 
-                            <option value="">Classe</option>
+                            <option value="">
+
+                                Choisir une classe
+
+                            </option>
 
                             {% for c in classes %}
 
                             <option value="{{ c.id }}">
+
                                 {{ c.nom }}
+
                             </option>
 
                             {% endfor %}
@@ -145,15 +818,115 @@
 
                     </div>
 
+
+                    <!-- ANNÉE SCOLAIRE -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="annee_scolaire"
+                            class="form-label">
+
+                            Année scolaire
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="annee_scolaire"
+                            id="annee_scolaire"
+                            class="form-control"
+                            placeholder="2026 - 2027">
+
+                    </div>
+
+
+                    <!-- DATE INSCRIPTION -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="date_inscription"
+                            class="form-label">
+
+                            Date d'inscription
+
+                        </label>
+
+                        <input
+                            type="date"
+                            name="date_inscription"
+                            id="date_inscription"
+                            class="form-control">
+
+                    </div>
+
                 </div>
 
-                <button class="btn btn-success">
 
-                    <i class="bi bi-plus-circle"></i>
+                <!-- ====================================== -->
+                <!-- ÉTAT + BOUTONS -->
+                <!-- ====================================== -->
 
-                    Ajouter
+                <div class="row">
 
-                </button>
+                    <div class="col-md-4 mb-3">
+
+                        <label
+                            for="etat"
+                            class="form-label">
+
+                            État
+
+                        </label>
+
+                        <select
+                            name="etat"
+                            id="etat"
+                            class="form-select">
+
+                            <option value="Actif">
+
+                                Actif
+
+                            </option>
+
+                            <option value="Inactif">
+
+                                Inactif
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-8 d-flex align-items-end justify-content-end">
+
+                        <button
+                            type="reset"
+                            class="btn btn-secondary me-2">
+
+                            <i class="bi bi-arrow-clockwise"></i>
+
+                            Réinitialiser
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success">
+
+                            <i class="bi bi-person-plus-fill"></i>
+
+                            Enregistrer l'élève
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </form>
 
@@ -161,121 +934,315 @@
 
     </div>
 
-    <!-- Liste -->
 
-    <div class="card shadow">
+    <!-- ================================================== -->
+    <!-- LISTE DES ÉLÈVES -->
+    <!-- ================================================== -->
 
-        <div class="card-header bg-success text-white d-flex justify-content-between">
+    <div class="card border-0 shadow-lg">
 
-            <span>
+        <div class="card-header bg-success text-white
+                    d-flex justify-content-between
+                    align-items-center">
 
-                <i class="bi bi-table"></i>
+            <h5 class="mb-0">
+
+                <i class="bi bi-people-fill"></i>
 
                 Liste des élèves
 
-            </span>
+            </h5>
 
-            <span class="badge bg-light text-dark">
+            <span class="badge bg-light text-dark fs-6">
 
-                {{ eleves|length }} élève(s)
+                {{ eleves|length }} Élève(s)
 
             </span>
 
         </div>
 
+
         <div class="card-body table-responsive">
 
-            <table class="table table-striped table-hover align-middle">
+            <table
+                class="table table-hover align-middle">
 
                 <thead class="table-dark">
 
                     <tr>
 
-                        <th>N°</th>
+                        <th>#</th>
+
+                        <th>Photo</th>
+
                         <th>Matricule</th>
-                        <th>Nom</th>
-                        <th>Postnom</th>
-                        <th>Prénom</th>
-                        <th class="text-center">Sexe</th>
-                        <th class="text-center">Classe</th>
-                        <th class="text-center">Actions</th>
+
+                        <th>Nom complet</th>
+
+                        <th>Sexe</th>
+
+                        <th>Classe</th>
+
+                        <th>État</th>
+
+                        <th class="text-center">
+
+                            Actions
+
+                        </th>
 
                     </tr>
 
                 </thead>
 
+
                 <tbody>
 
-                {% for e in eleves %}
+                    {% for e in eleves %}
 
                     <tr>
 
-                        <td>{{ loop.index }}</td>
+                        <!-- NUMÉRO -->
 
-                        <td>{{ e.matricule }}</td>
+                        <td>
 
-                        <td>{{ e.nom }}</td>
-
-                        <td>{{ e.postnom }}</td>
-
-                        <td>{{ e.prenom }}</td>
-
-                        <td class="text-center">
-
-                            {{ e.sexe }}
+                            {{ loop.index }}
 
                         </td>
 
-                        <td class="text-center">
+
+                        <!-- PHOTO -->
+
+                        <td>
+
+                            {% if e.photo %}
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='uploads/' + e.photo
+                                ) }}"
+                                class="rounded-circle"
+                                width="60"
+                                height="60"
+                                style="
+                                    object-fit:cover;
+                                    border:3px solid #0d6efd;
+                                "
+                                alt="Photo">
+
+                            {% else %}
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='images/avatar.png'
+                                ) }}"
+                                class="rounded-circle"
+                                width="60"
+                                height="60"
+                                alt="Avatar">
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- MATRICULE -->
+
+                        <td>
+
+                            <span class="badge bg-primary">
+
+                                {{ e.matricule }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- NOM COMPLET -->
+
+                        <td>
+
+                            <strong>
+
+                                {{ e.nom }}
+
+                                {{ e.postnom }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ e.prenom }}
+
+                            </small>
+
+                        </td>
+
+
+                        <!-- SEXE -->
+
+                        <td>
+
+                            {% if e.sexe == "M" %}
+
+                            <span class="badge bg-info">
+
+                                Masculin
+
+                            </span>
+
+                            {% elif e.sexe == "F" %}
+
+                            <span class="badge bg-danger">
+
+                                Féminin
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-secondary">
+
+                                -
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CLASSE -->
+
+                        <td>
 
                             {{ e.classe.nom if e.classe else "-" }}
 
                         </td>
 
+
+                        <!-- ÉTAT -->
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                Actif
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
                         <td class="text-center">
 
-                            <a
-                                href="{{ url_for('modifier_eleve', id=e.id) }}"
-                                class="btn btn-warning btn-sm">
+                            <div class="btn-group"
+                                 role="group">
 
-                                <i class="bi bi-pencil-square"></i>
 
-                            </a>
+                                <!-- MODIFIER -->
 
-                            <a
-                                href="{{ url_for('paiements') }}"
-                                class="btn btn-primary btn-sm">
+                                <a
+                                    href="{{ url_for(
+                                        'modifier_eleve',
+                                        id=e.id
+                                    ) }}"
+                                    class="btn btn-warning btn-sm"
+                                    title="Modifier">
 
-                                <i class="bi bi-cash-stack"></i>
+                                    <i class="bi bi-pencil-square"></i>
 
-                            </a>
+                                </a>
 
-                            <a
-                                href="{{ url_for('supprimer_eleve', id=e.id) }}"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Supprimer {{ e.nom }} {{ e.postnom }} ?');">
 
-                                <i class="bi bi-trash"></i>
+                                <!-- PAIEMENT -->
 
-                            </a>
+                                <a
+                                    href="{{ url_for('paiements') }}"
+                                    class="btn btn-success btn-sm"
+                                    title="Paiement">
+
+                                    <i class="bi bi-cash-stack"></i>
+
+                                </a>
+
+
+                                <!-- FICHE -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'fiche_eleve',
+                                        id=e.id
+                                    ) }}"
+                                    class="btn btn-info btn-sm"
+                                    title="Voir la fiche">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </a>
+
+
+                                <!-- SUPPRIMER -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'supprimer_eleve',
+                                        id=e.id
+                                    ) }}"
+                                    class="btn btn-danger btn-sm"
+                                    title="Supprimer"
+                                    onclick="return confirmerSuppression(
+                                        '{{ e.nom }} {{ e.postnom }}'
+                                    );">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                            </div>
 
                         </td>
 
                     </tr>
 
-                {% else %}
+                    {% else %}
 
                     <tr>
 
-                        <td colspan="8" class="text-center text-muted">
+                        <td
+                            colspan="8"
+                            class="text-center p-5">
 
-                            Aucun élève enregistré.
+                            <i
+                                class="bi bi-emoji-frown fs-1 text-secondary">
+                            </i>
+
+                            <br><br>
+
+                            <h5>
+
+                                Aucun élève enregistré.
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Ajoutez un élève pour commencer.
+
+                            </p>
 
                         </td>
 
                     </tr>
 
-                {% endfor %}
+                    {% endfor %}
 
                 </tbody>
 
@@ -284,7 +1251,392 @@
         </div>
 
     </div>
+        <!-- ================================================== -->
+    <!-- STATISTIQUES SUPPLÉMENTAIRES -->
+    <!-- ================================================== -->
+
+    <div class="row mt-4">
+
+        <!-- ÉLÈVES -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill fs-1 text-primary"></i>
+
+                    <h3>
+
+                        {{ eleves|length }}
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Élèves enregistrés
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLASSES -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-building fs-1 text-success"></i>
+
+                    <h3>
+
+                        {{ classes|length }}
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Classes disponibles
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PHOTOS -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-images fs-1 text-warning"></i>
+
+                    <h3>
+
+                        {{ eleves|length }}
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Photos enregistrées
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- FONCTIONNALITÉS SCHOOLPAY PRO -->
+    <!-- ================================================== -->
+
+    <div class="card shadow border-0 mt-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-stars"></i>
+
+                Fonctionnalités SchoolPay Pro 2.0
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row">
+
+
+                <!-- WEBCAM -->
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-primary text-center">
+
+                        <i class="bi bi-camera-fill fs-2"></i>
+
+                        <br><br>
+
+                        Webcam
+
+                        <br>
+
+                        <small>
+
+                            Bientôt
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QR CODE -->
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-success text-center">
+
+                        <i class="bi bi-qr-code fs-2"></i>
+
+                        <br><br>
+
+                        QR Code
+
+                        <br>
+
+                        <small>
+
+                            Bientôt
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARTE -->
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-warning text-center">
+
+                        <i class="bi bi-person-vcard-fill fs-2"></i>
+
+                        <br><br>
+
+                        Carte Élève
+
+                        <br>
+
+                        <small>
+
+                            Bientôt
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- IMPRESSION -->
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-info text-center">
+
+                        <i class="bi bi-printer-fill fs-2"></i>
+
+                        <br><br>
+
+                        Impression
+
+                        <br>
+
+                        <small>
+
+                            Bientôt
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
 </div>
+
+
+<!-- ================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ========================================== */
+        /* APERÇU DE LA PHOTO */
+        /* ========================================== */
+
+        const inputPhoto =
+            document.getElementById("photo");
+
+        const preview =
+            document.getElementById("preview");
+
+
+        if (inputPhoto && preview) {
+
+            inputPhoto.addEventListener(
+                "change",
+                function () {
+
+                    const fichier =
+                        this.files &&
+                        this.files[0];
+
+
+                    if (fichier) {
+
+                        const lecteur =
+                            new FileReader();
+
+
+                        lecteur.onload =
+                            function (event) {
+
+                                preview.src =
+                                    event.target.result;
+
+                            };
+
+
+                        lecteur.readAsDataURL(
+                            fichier
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ========================================== */
+        /* RECHERCHE : FOCUS AUTOMATIQUE */
+        /* ========================================== */
+
+        const recherche =
+            document.getElementById(
+                "recherche"
+            );
+
+
+        if (recherche) {
+
+            recherche.focus();
+
+        }
+
+
+        /* ========================================== */
+        /* ANIMATION DES CARTES */
+        /* ========================================== */
+
+        document
+            .querySelectorAll(".card")
+            .forEach(function (card) {
+
+
+                card.addEventListener(
+                    "mouseenter",
+                    function () {
+
+                        this.style.transform =
+                            "translateY(-4px)";
+
+                        this.style.transition =
+                            "0.3s";
+
+                        this.style.boxShadow =
+                            "0 12px 25px rgba(0,0,0,.15)";
+
+                    }
+                );
+
+
+                card.addEventListener(
+                    "mouseleave",
+                    function () {
+
+                        this.style.transform =
+                            "translateY(0)";
+
+                        this.style.boxShadow =
+                            "";
+
+                    }
+                );
+
+            });
+
+
+        /* ========================================== */
+        /* MESSAGE CONSOLE */
+        /* ========================================== */
+
+        console.log(
+            "==================================="
+        );
+
+        console.log(
+            "SchoolPay Pro 2.0 Enterprise"
+        );
+
+        console.log(
+            "Module : Gestion des élèves"
+        );
+
+        console.log(
+            "==================================="
+        );
+
+    }
+);
+
+
+/* ========================================== */
+/* CONFIRMATION SUPPRESSION */
+/* ========================================== */
+
+function confirmerSuppression(nom) {
+
+    return confirm(
+        "Voulez-vous vraiment supprimer l'élève : "
+        + nom
+        + " ?"
+    );
+
+}
+
+</script>
+
 
 {% endblock %}

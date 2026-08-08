@@ -14,7 +14,7 @@
 
                 <div class="card-header bg-warning text-dark">
 
-                    <h4 class="mb-0">
+                    <h4>
 
                         <i class="bi bi-pencil-square"></i>
 
@@ -30,11 +30,7 @@
 
                         <div class="mb-3">
 
-                            <label class="form-label">
-
-                                Élève
-
-                            </label>
+                            <label>Élève</label>
 
                             <select
                                 name="eleve_id"
@@ -45,13 +41,9 @@
 
                                 <option
                                     value="{{ e.id }}"
-                                    {% if e.id == paiement.eleve_id %}selected{% endif %}>
+                                    {% if paiement.eleve_id == e.id %}selected{% endif %}>
 
-                                    {{ e.matricule }}
-                                    -
-                                    {{ e.nom }}
-                                    {{ e.postnom }}
-                                    {{ e.prenom }}
+                                    {{ e.matricule }} - {{ e.nom }} {{ e.postnom }} {{ e.prenom }}
 
                                 </option>
 
@@ -63,16 +55,36 @@
 
                         <div class="mb-3">
 
-                            <label class="form-label">
+                            <label>Motif</label>
 
-                                Montant ($)
+                            <select
+                                name="motif_id"
+                                class="form-select"
+                                required>
 
-                            </label>
+                                {% for m in motifs %}
+
+                                <option
+                                    value="{{ m.id }}"
+                                    {% if paiement.motif_id == m.id %}selected{% endif %}>
+
+                                    {{ m.nom }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Montant</label>
 
                             <input
                                 type="number"
                                 step="0.01"
-                                min="0.01"
                                 name="montant"
                                 class="form-control"
                                 value="{{ paiement.montant }}"
@@ -80,21 +92,90 @@
 
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
 
-                            <label class="form-label">
+                            <label>Devise</label>
 
-                                Motif du paiement
+                            <select
+                                name="devise"
+                                class="form-select">
 
-                            </label>
+                                <option
+                                    value="USD"
+                                    {% if paiement.devise=="USD" %}selected{% endif %}>
+
+                                    USD
+
+                                </option>
+
+                                <option
+                                    value="CDF"
+                                    {% if paiement.devise=="CDF" %}selected{% endif %}>
+
+                                    CDF
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Mode de paiement</label>
+
+                            <select
+                                name="mode_paiement"
+                                class="form-select">
+
+                                <option
+                                    value="Espèces"
+                                    {% if paiement.mode_paiement=="Espèces" %}selected{% endif %}>
+
+                                    Espèces
+
+                                </option>
+
+                                <option
+                                    value="Mobile Money"
+                                    {% if paiement.mode_paiement=="Mobile Money" %}selected{% endif %}>
+
+                                    Mobile Money
+
+                                </option>
+
+                                <option
+                                    value="Banque"
+                                    {% if paiement.mode_paiement=="Banque" %}selected{% endif %}>
+
+                                    Banque
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Référence</label>
 
                             <input
                                 type="text"
-                                name="motif"
+                                name="reference"
                                 class="form-control"
-                                value="{{ paiement.motif }}"
-                                placeholder="Exemple : Frais scolaires"
-                                required>
+                                value="{{ paiement.reference or '' }}">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label>Observation</label>
+
+                            <textarea
+                                name="observation"
+                                class="form-control"
+                                rows="3">{{ paiement.observation or '' }}</textarea>
 
                         </div>
 
@@ -116,7 +197,7 @@
 
                                 <i class="bi bi-save"></i>
 
-                                Enregistrer les modifications
+                                Enregistrer
 
                             </button>
 

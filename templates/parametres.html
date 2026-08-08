@@ -1,155 +1,586 @@
 {% extends "base.html" %}
 
-{% block title %}Paramètres{% endblock %}
+{% block title %}
+Paramètres de l'école
+{% endblock %}
+
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
 
-    <div class="row justify-content-center">
+    <!-- ==========================================
+         EN-TÊTE
+         ========================================== -->
 
-        <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <div class="card shadow">
+        <div>
 
-                <div class="card-header bg-primary text-white">
+            <h2 class="fw-bold mb-1">
 
-                    <h4 class="mb-0">
-                        <i class="bi bi-gear-fill"></i>
-                        Paramètres de l'établissement
-                    </h4>
+                <i class="bi bi-gear-fill text-primary"></i>
 
-                </div>
+                Paramètres
 
-                <div class="card-body">
+            </h2>
 
-                    <form method="POST">
+            <p class="text-muted mb-0">
 
-                        <div class="mb-3">
+                Configurez les informations de votre établissement.
 
-                            <label class="form-label">
+            </p>
 
-                                Nom de l'établissement
+        </div>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Retour
+
+        </a>
+
+    </div>
+
+
+    <!-- ==========================================
+         FORMULAIRE
+         ========================================== -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data">
+
+
+        <div class="row g-4">
+
+
+            <!-- ==================================
+                 INFORMATIONS DE L'ÉCOLE
+                 ================================== -->
+
+            <div class="col-lg-8">
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-header bg-primary text-white py-3">
+
+                        <h5 class="mb-0 fw-bold">
+
+                            <i class="bi bi-building"></i>
+
+                            Informations de l'établissement
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="card-body p-4">
+
+
+                        <!-- NOM -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="nom_ecole"
+                                class="form-label fw-bold">
+
+                                Nom de l'école
+                                <span class="text-danger">*</span>
 
                             </label>
 
+
                             <input
                                 type="text"
+                                id="nom_ecole"
                                 name="nom_ecole"
-                                class="form-control"
-                                value="{{ parametre.nom_ecole if parametre else '' }}"
+                                class="form-control form-control-lg"
+                                value="{{ param.nom_ecole or '' }}"
+                                placeholder="Exemple : Complexe Scolaire La Suisse"
                                 required>
 
                         </div>
 
-                        <div class="mb-3">
 
-                            <label class="form-label">
+                        <!-- ADRESSE -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="adresse"
+                                class="form-label fw-bold">
+
+                                <i class="bi bi-geo-alt"></i>
 
                                 Adresse
 
                             </label>
 
-                            <input
-                                type="text"
+
+                            <textarea
+                                id="adresse"
                                 name="adresse"
                                 class="form-control"
-                                value="{{ parametre.adresse if parametre else '' }}">
+                                rows="3"
+                                placeholder="Adresse complète de l'école">{{ param.adresse or '' }}</textarea>
 
                         </div>
 
-                        <div class="mb-3">
 
-                            <label class="form-label">
+                        <div class="row g-3">
 
-                                Téléphone
+
+                            <!-- TÉLÉPHONE -->
+
+                            <div class="col-md-6">
+
+                                <label
+                                    for="telephone"
+                                    class="form-label fw-bold">
+
+                                    <i class="bi bi-telephone"></i>
+
+                                    Téléphone
+
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    id="telephone"
+                                    name="telephone"
+                                    class="form-control"
+                                    value="{{ param.telephone or '' }}"
+                                    placeholder="+243 ...">
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="col-md-6">
+
+                                <label
+                                    for="email"
+                                    class="form-label fw-bold">
+
+                                    <i class="bi bi-envelope"></i>
+
+                                    E-mail
+
+                                </label>
+
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="form-control"
+                                    value="{{ param.email or '' }}"
+                                    placeholder="ecole@example.com">
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- SITE WEB -->
+
+                        <div class="mt-4">
+
+                            <label
+                                for="site_web"
+                                class="form-label fw-bold">
+
+                                <i class="bi bi-globe"></i>
+
+                                Site Web
 
                             </label>
+
 
                             <input
-                                type="text"
-                                name="telephone"
+                                type="url"
+                                id="site_web"
+                                name="site_web"
                                 class="form-control"
-                                value="{{ parametre.telephone if parametre else '' }}">
+                                value="{{ param.site_web or '' }}"
+                                placeholder="https://www.ecole.com">
 
                         </div>
 
-                        <div class="mb-3">
 
-                            <label class="form-label">
+                        <!-- DEVISE -->
 
-                                Adresse e-mail
+                        <div class="mt-4">
 
-                            </label>
+                            <label
+                                for="devise"
+                                class="form-label fw-bold">
 
-                            <input
-                                type="email"
-                                name="email"
-                                class="form-control"
-                                value="{{ parametre.email if parametre else '' }}">
+                                <i class="bi bi-currency-exchange"></i>
 
-                        </div>
-
-                        <div class="mb-4">
-
-                            <label class="form-label">
-
-                                Devise utilisée
+                                Devise principale
 
                             </label>
+
 
                             <select
+                                id="devise"
                                 name="devise"
                                 class="form-select">
 
-                                <option value="USD"
-                                {% if parametre and parametre.devise=="USD" %}selected{% endif %}>
-                                    Dollar américain (USD)
+                                <option
+                                    value="USD"
+                                    {% if param.devise == "USD" %}selected{% endif %}>
+
+                                    USD — Dollar américain
+
                                 </option>
 
-                                <option value="CDF"
-                                {% if parametre and parametre.devise=="CDF" %}selected{% endif %}>
-                                    Franc congolais (CDF)
+
+                                <option
+                                    value="CDF"
+                                    {% if param.devise == "CDF" %}selected{% endif %}>
+
+                                    CDF — Franc congolais
+
                                 </option>
 
                             </select>
 
                         </div>
 
-                        <div class="d-flex justify-content-between">
 
-                            <a
-                                href="{{ url_for('dashboard') }}"
-                                class="btn btn-secondary">
-
-                                <i class="bi bi-arrow-left"></i>
-
-                                Retour
-
-                            </a>
-
-                            <button
-                                type="submit"
-                                class="btn btn-success">
-
-                                <i class="bi bi-save"></i>
-
-                                Enregistrer
-
-                            </button>
-
-                        </div>
-
-                    </form>
+                    </div>
 
                 </div>
 
             </div>
 
+
+            <!-- ==================================
+                 LOGO
+                 ================================== -->
+
+            <div class="col-lg-4">
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-header bg-dark text-white py-3">
+
+                        <h5 class="mb-0 fw-bold">
+
+                            <i class="bi bi-image"></i>
+
+                            Logo de l'école
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="card-body p-4 text-center">
+
+
+                        <!-- APERÇU -->
+
+                        <div class="logo-preview mb-4">
+
+
+                            {% if param.logo %}
+
+                                <img
+                                    src="{{ url_for('static', filename='uploads/' ~ param.logo) }}"
+                                    alt="Logo de l'école"
+                                    id="logoPreview">
+
+                            {% else %}
+
+                                <div
+                                    id="logoPlaceholder"
+                                    class="logo-placeholder">
+
+                                    <i class="bi bi-building"></i>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <!-- CHOIX FICHIER -->
+
+                        <label
+                            for="logo"
+                            class="form-label fw-bold">
+
+                            Choisir un nouveau logo
+
+                        </label>
+
+
+                        <input
+                            type="file"
+                            id="logo"
+                            name="logo"
+                            class="form-control"
+                            accept=".png,.jpg,.jpeg,.webp"
+                            onchange="previewLogo(this)">
+
+
+                        <div class="form-text mt-2">
+
+                            Formats acceptés :
+                            PNG, JPG, JPEG, WEBP
+
+                        </div>
+
+
+                        <div class="alert alert-info mt-4 text-start">
+
+                            <i class="bi bi-info-circle"></i>
+
+                            Le logo sera utilisé notamment
+                            sur les cartes des élèves.
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
         </div>
 
-    </div>
+
+        <!-- ==========================================
+             BOUTONS
+             ========================================== -->
+
+        <div class="card border-0 shadow-sm mt-4">
+
+            <div class="card-body d-flex justify-content-end gap-2">
+
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="btn btn-light border">
+
+                    <i class="bi bi-x-circle"></i>
+
+                    Annuler
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary px-4">
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    Enregistrer les paramètres
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+    </form>
 
 </div>
+
+
+<!-- ==========================================
+     STYLE
+     ========================================== -->
+
+<style>
+
+.logo-preview {
+
+    width: 180px;
+
+    height: 180px;
+
+    margin: 0 auto;
+
+    border-radius: 20px;
+
+    border: 2px dashed #cbd5e1;
+
+    background: #f8fafc;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+}
+
+
+.logo-preview img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    padding: 12px;
+
+}
+
+
+.logo-placeholder {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #94a3b8;
+
+    font-size: 60px;
+
+}
+
+
+.card {
+
+    border-radius: 14px;
+
+}
+
+
+.form-control,
+.form-select {
+
+    border-radius: 9px;
+
+}
+
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: #075fe8;
+
+    box-shadow:
+        0 0 0 .2rem
+        rgba(7, 95, 232, .12);
+
+}
+
+</style>
+
+
+<!-- ==========================================
+     APERÇU DU LOGO
+     ========================================== -->
+
+<script>
+
+function previewLogo(input) {
+
+    if (!input.files || !input.files[0]) {
+
+        return;
+
+    }
+
+
+    const file = input.files[0];
+
+
+    const allowed = [
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+    ];
+
+
+    if (!allowed.includes(file.type)) {
+
+        alert(
+            "Veuillez choisir une image PNG, JPG, JPEG ou WEBP."
+        );
+
+        input.value = "";
+
+        return;
+
+    }
+
+
+    const reader = new FileReader();
+
+
+    reader.onload = function(event) {
+
+        let preview =
+            document.getElementById("logoPreview");
+
+
+        if (!preview) {
+
+            const placeholder =
+                document.getElementById(
+                    "logoPlaceholder"
+                );
+
+
+            preview =
+                document.createElement("img");
+
+
+            preview.id = "logoPreview";
+
+            preview.alt =
+                "Aperçu du logo";
+
+
+            placeholder.replaceWith(
+                preview
+            );
+
+        }
+
+
+        preview.src =
+            event.target.result;
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+</script>
 
 {% endblock %}

@@ -1,7 +1,12 @@
+/* ==========================================
+   STYLE GENERAL
+========================================== */
+
 body{
     margin:0;
     background:#f4f6f9;
     font-family:Arial, Helvetica, sans-serif;
+    transition:0.3s;
 }
 
 .sidebar{
@@ -23,7 +28,7 @@ body{
     color:white;
     text-decoration:none;
     padding:15px 20px;
-    transition:.3s;
+    transition:0.3s;
 }
 
 .sidebar a:hover{
@@ -33,19 +38,97 @@ body{
 .content{
     margin-left:260px;
     padding:25px;
+    transition:0.3s;
 }
 
 .card{
     border:none;
     border-radius:15px;
-}
-.card{
-    border:none;
-    border-radius:15px;
-    transition:.3s;
     box-shadow:0 5px 15px rgba(0,0,0,.1);
+    transition:0.3s;
 }
 
 .card:hover{
     transform:translateY(-5px);
+}
+
+/* ==========================================
+   MODE SOMBRE
+========================================== */
+
+body.dark-mode{
+    background:#1c1c1c;
+    color:#ffffff;
+}
+
+body.dark-mode .content{
+    background:#1c1c1c;
+}
+
+body.dark-mode .sidebar{
+    background:#111827;
+}
+
+body.dark-mode .topbar{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode .card{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode table{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode .table{
+    color:white;
+}
+
+body.dark-mode .table th{
+    background:#111827;
+    color:white;
+}
+
+body.dark-mode .table td{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode textarea{
+    background:#333;
+    color:white;
+    border:1px solid #555;
+}
+
+body.dark-mode .btn-light{
+    background:#444;
+    color:white;
+    border:none;
+}
+
+body.dark-mode a{
+    color:#ffffff;
+}
+
+body.dark-mode .modal-content{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode .dropdown-menu{
+    background:#2b2b2b;
+}
+
+body.dark-mode .dropdown-item{
+    color:white;
+}
+
+body.dark-mode .dropdown-item:hover{
+    background:#444;
 }

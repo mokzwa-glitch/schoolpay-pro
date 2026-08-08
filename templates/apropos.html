@@ -14,13 +14,13 @@
 
                 <div class="card-header bg-primary text-white">
 
-                    <h4 class="mb-0">
+                    <h3>
 
                         <i class="bi bi-info-circle-fill"></i>
 
                         À propos de SchoolPay Pro
 
-                    </h4>
+                    </h3>
 
                 </div>
 
@@ -28,21 +28,20 @@
 
                     <div class="text-center mb-4">
 
+                        {% if parametre and parametre.logo %}
+
                         <img
-                            src="{{ url_for('static', filename='images/logo.png') }}"
-                            width="120">
+                            src="{{ url_for('static', filename='uploads/' + parametre.logo) }}"
+                            width="120"
+                            class="img-fluid mb-3">
 
-                        <h3 class="mt-3">
+                        {% endif %}
 
-                            SchoolPay Pro
+                        <h2>
 
-                        </h3>
+                            {{ parametre.nom_ecole if parametre else "SchoolPay Pro" }}
 
-                        <p class="text-muted">
-
-                            Version 1.0
-
-                        </p>
+                        </h2>
 
                     </div>
 
@@ -50,7 +49,7 @@
 
                         <tr>
 
-                            <th>Application</th>
+                            <th width="30%">Application</th>
 
                             <td>SchoolPay Pro</td>
 
@@ -58,53 +57,57 @@
 
                         <tr>
 
-                            <th>Langage</th>
+                            <th>Version</th>
 
-                            <td>Python 3</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Framework</th>
-
-                            <td>Flask</td>
+                            <td>2.0</td>
 
                         </tr>
 
                         <tr>
 
-                            <th>Base de données</th>
+                            <th>Développeur</th>
 
-                            <td>MySQL</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Interface</th>
-
-                            <td>Bootstrap 5</td>
+                            <td>Kiese Manunga Rifils</td>
 
                         </tr>
 
                         <tr>
 
-                            <th>Université</th>
+                            <th>Technologies</th>
 
-                            <td>Université Pédagogique Nationale (UPN)</td>
+                            <td>
+
+                                Python • Flask • SQLAlchemy • Bootstrap 5 • MySQL
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Description</th>
+
+                            <td>
+
+                                Application de gestion des frais scolaires,
+                                des élèves, des paiements, des utilisateurs,
+                                des statistiques et des reçus.
+
+                            </td>
 
                         </tr>
 
                     </table>
 
-                    <div class="alert alert-success mt-4">
+                    <div class="text-center mt-4">
 
-                        <strong>Projet académique</strong><br>
+                        <a
+                            href="{{ url_for('dashboard') }}"
+                            class="btn btn-primary">
 
-                        Cette application permet la gestion des élèves,
-                        des classes, des paiements des frais scolaires,
-                        des utilisateurs et des statistiques.
+                            Retour au tableau de bord
+
+                        </a>
 
                     </div>
 

@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Cartes scolaires
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ====================================== -->
+    <!-- TITRE -->
+    <!-- ====================================== -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-8">
+
+            <h2 class="fw-bold text-primary">
+
+                <i class="bi bi-person-vcard-fill"></i>
+
+                Cartes scolaires
+
+            </h2>
+
+            <p class="text-muted">
+
+                Génération et impression des cartes des élèves.
+
+            </p>
+
+        </div>
+
+        <div class="col-md-4 text-end">
+
+            <a
+                href="{{ url_for('eleves') }}"
+                class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left-circle"></i>
+
+                Retour
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ====================================== -->
+    <!-- TABLEAU -->
+    <!-- ====================================== -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <i class="bi bi-card-heading"></i>
+
+            Liste des élèves
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th width="90">
+
+                                Photo
+
+                            </th>
+
+                            <th>
+
+                                Matricule
+
+                            </th>
+
+                            <th>
+
+                                Nom complet
+
+                            </th>
+
+                            <th>
+
+                                Classe
+
+                            </th>
+
+                            <th>
+
+                                Sexe
+
+                            </th>
+
+                            <th width="170">
+
+                                Action
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for e in eleves %}
+
+                                            <tr>
+
+                            <!-- ========================= -->
+                            <!-- PHOTO -->
+                            <!-- ========================= -->
+
+                            <td class="text-center">
+
+                                {% if e.photo %}
+
+                                    <img
+                                        src="{{ url_for('static', filename='uploads/' + e.photo) }}"
+                                        width="70"
+                                        height="70"
+                                        class="rounded-circle border">
+
+                                {% else %}
+
+                                    <img
+                                        src="{{ url_for('static', filename='images/avatar.png') }}"
+                                        width="70"
+                                        height="70"
+                                        class="rounded-circle border">
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- MATRICULE -->
+
+                            <td>
+
+                                <strong>
+
+                                    {{ e.matricule }}
+
+                                </strong>
+
+                            </td>
+
+                            <!-- NOM -->
+
+                            <td>
+
+                                {{ e.nom }}
+
+                                {{ e.postnom }}
+
+                                {{ e.prenom }}
+
+                            </td>
+
+                            <!-- CLASSE -->
+
+                            <td>
+
+                                {% if e.classe %}
+
+                                    {{ e.classe.nom }}
+
+                                {% else %}
+
+                                    <span class="text-danger">
+
+                                        Non définie
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- SEXE -->
+
+                            <td>
+
+                                {% if e.sexe == "Masculin" or e.sexe == "M" %}
+
+                                    <span class="badge bg-primary">
+
+                                        Masculin
+
+                                    </span>
+
+                                {% elif e.sexe == "Féminin" or e.sexe == "F" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Féminin
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+
+                                        Non renseigné
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                            <a
+                                href="{{ url_for('carte_eleve', id=e.id) }}"
+                                class="btn btn-success">
+
+                                <i class="bi bi-person-vcard"></i>
+
+                                Voir la carte
+
+                            </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center text-muted py-4">
+
+                                <i class="bi bi-inbox fs-1"></i>
+
+                                <br><br>
+
+                                Aucun élève enregistré.
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+                                        </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ====================================== -->
+    <!-- STATISTIQUES -->
+    <!-- ====================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill fs-1 text-primary"></i>
+
+                    <h3>
+
+                        {{ eleves|length }}
+
+                    </h3>
+
+                    <small>
+
+                        Élèves enregistrés
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-vcard-fill fs-1 text-success"></i>
+
+                    <h3>
+
+                        {{ eleves|length }}
+
+                    </h3>
+
+                    <small>
+
+                        Cartes disponibles
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-printer-fill fs-1 text-danger"></i>
+
+                    <h3>
+
+                        Impression
+
+                    </h3>
+
+                    <small>
+
+                        Cliquez sur "Voir la carte"
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ====================================== -->
+<!-- JAVASCRIPT -->
+<!-- ====================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const lignes = document.querySelectorAll("tbody tr");
+
+    lignes.forEach(function(ligne){
+
+        ligne.addEventListener("mouseenter", function(){
+
+            this.style.transition=".3s";
+
+            this.style.transform="scale(1.01)";
+
+        });
+
+        ligne.addEventListener("mouseleave", function(){
+
+            this.style.transform="scale(1)";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

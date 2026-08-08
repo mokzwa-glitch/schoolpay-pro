@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<h3 class="mb-4">
+<i class="bi bi-bell-fill"></i>
+Notifications
+</h3>
+
+{% if notifications %}
+
+<table class="table table-striped">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Message</th>
+
+<th>Date</th>
+
+<th>Etat</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for n in notifications %}
+
+<tr>
+
+<td>{{ n.message }}</td>
+
+<td>{{ n.date_notification.strftime("%d/%m/%Y %H:%M") }}</td>
+
+<td>
+
+{% if n.lue %}
+
+<span class="badge bg-success">
+
+Lue
+
+</span>
+
+{% else %}
+
+<span class="badge bg-danger">
+
+Nouvelle
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if not n.lue %}
+
+<a
+href="{{ url_for('notification_lue', id=n.id) }}"
+class="btn btn-primary btn-sm">
+
+Marquer comme lue
+
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<div class="alert alert-info">
+
+Aucune notification.
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,76 +1,131 @@
 {% extends "base.html" %}
 
-{% block title %}Sauvegarde{% endblock %}
+{% block title %}
+Sauvegarde
+{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <div class="row justify-content-center">
+    <div class="card shadow">
 
-        <div class="col-lg-8">
+        <div class="card-header bg-success text-white">
 
-            <div class="card shadow">
+            <h4>
+                <i class="bi bi-database-fill-check"></i>
+                Sauvegarde de la base de données
+            </h4>
 
-                <div class="card-header bg-primary text-white">
+        </div>
 
-                    <h4 class="mb-0">
+        <div class="card-body">
 
-                        <i class="bi bi-cloud-arrow-down-fill"></i>
-
-                        Sauvegarde de la base de données
-
-                    </h4>
-
-                </div>
-
-                <div class="card-body">
-
-                    <div class="alert alert-info">
-
-                        <i class="bi bi-info-circle-fill"></i>
-
-                        Cette opération permet de créer une copie de sécurité
-                        de toutes les données de SchoolPay Pro.
-
-                    </div>
-
-                    <table class="table table-bordered">
-
-                        <tr>
-                            <th>Système</th>
-                            <td>SchoolPay Pro</td>
-                        </tr>
-
-                        <tr>
-                            <th>Base de données</th>
-                            <td>MySQL</td>
-                        </tr>
-
-                        <tr>
-                            <th>Version</th>
-                            <td>1.0</td>
-                        </tr>
-
-                    </table>
-
-                    <div class="text-center mt-4">
-
-                        <a
-                            href="{{ url_for('telecharger_backup') }}"
-                            class="btn btn-success btn-lg">
-
-                            <i class="bi bi-download"></i>
-
-                            Télécharger la sauvegarde
-
-                        </a>
-
-                    </div>
-
-                </div>
-
+            <div class="alert alert-info">
+                Cette page permet d'effectuer une sauvegarde de la base de données.
             </div>
+
+            <form method="POST" action="{{ url_for('backup') }}">
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="bi bi-download"></i>
+
+                    Effectuer une sauvegarde
+
+                </button>
+
+            </form>
+
+            <hr>
+
+            <h5>Historique des sauvegardes</h5>
+
+            <table class="table table-striped table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Nom du fichier</th>
+
+                        <th>Taille</th>
+
+                        <th>Date</th>
+
+                        <th>Utilisateur</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for s in sauvegardes %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>{{ s.nom_fichier }}</td>
+
+                        <td>{{ s.taille or "-" }}</td>
+
+                        <td>
+
+                            {% if s.date_sauvegarde %}
+
+                                {{ s.date_sauvegarde.strftime("%d/%m/%Y %H:%M") }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ s.utilisateur }}</td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('telecharger_backup', nom=s.nom_fichier) }}"
+                                class="btn btn-primary btn-sm">
+
+                                <i class="bi bi-download"></i>
+
+                                Télécharger
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+
+                            Aucune sauvegarde disponible.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
 

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des motifs{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+
+                <i class="bi bi-tags-fill"></i>
+
+                Gestion des motifs de paiement
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-10">
+
+                        <input
+                            type="text"
+                            name="nom"
+                            class="form-control"
+                            placeholder="Nom du motif"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <button
+                            class="btn btn-success w-100">
+
+                            <i class="bi bi-plus-circle"></i>
+
+                            Ajouter
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+            <hr>
+
+            <table class="table table-striped">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Motif</th>
+
+                        <th width="180">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for m in motifs %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>{{ m.nom }}</td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('modifier_motif', id=m.id) }}"
+                                class="btn btn-warning btn-sm">
+
+                                Modifier
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('supprimer_motif', id=m.id) }}"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Supprimer ce motif ?')">
+
+                                Supprimer
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="3" class="text-center">
+
+                            Aucun motif enregistré.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

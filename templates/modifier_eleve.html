@@ -1,89 +1,309 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Modifier un élève</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block title %}Modifier un élève{% endblock %}
 
-<body class="bg-light">
-    
+{% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid">
 
-    <div class="card shadow">
+<div class="card shadow">
 
-        <div class="card-header bg-warning text-dark">
-            <h3>Modifier un élève</h3>
-        </div>
+<div class="card-header bg-warning text-dark">
 
-        <div class="card-body">
+<h3>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for categorie, message in messages %}
-            <div class="alert alert-{{ categorie }}">
-                {{ message }}
-            </div>
+<i class="bi bi-pencil-square"></i>
+
+Modifier un élève
+
+</h3>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="row">
+
+<div class="col-md-3 text-center">
+
+{% if eleve.photo %}
+
+<img
+src="{{ url_for('static', filename='uploads/' + eleve.photo) }}"
+class="img-thumbnail mb-3"
+width="180">
+
+{% else %}
+
+<img
+src="{{ url_for('static', filename='images/avatar.png') }}"
+class="img-thumbnail mb-3"
+width="180">
+
+{% endif %}
+
+<input
+type="file"
+name="photo"
+class="form-control">
+
+</div>
+
+<div class="col-md-9">
+
+<div class="row">
+
+<div class="col-md-4 mb-3">
+
+<label>Matricule</label>
+
+<input
+type="text"
+class="form-control"
+value="{{ eleve.matricule }}"
+readonly>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Nom</label>
+
+<input
+type="text"
+name="nom"
+class="form-control"
+value="{{ eleve.nom }}"
+required>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Postnom</label>
+
+<input
+type="text"
+name="postnom"
+class="form-control"
+value="{{ eleve.postnom }}"
+required>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Prénom</label>
+
+<input
+type="text"
+name="prenom"
+class="form-control"
+value="{{ eleve.prenom }}"
+required>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Sexe</label>
+
+<select
+name="sexe"
+class="form-select">
+
+<option
+value="M"
+{% if eleve.sexe=="M" %}selected{% endif %}>
+Masculin
+</option>
+
+<option
+value="F"
+{% if eleve.sexe=="F" %}selected{% endif %}>
+Féminin
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Date de naissance</label>
+
+<input
+type="date"
+name="date_naissance"
+class="form-control"
+value="{{ eleve.date_naissance }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+    <label>Lieu de naissance</label>
+
+    <input
+        type="text"
+        name="lieu_naissance"
+        class="form-control"
+        value="{{ eleve.lieu_naissance or '' }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+    <label>Adresse</label>
+
+    <input
+        type="text"
+        name="adresse"
+        class="form-control"
+        value="{{ eleve.adresse or '' }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+    <label>Téléphone</label>
+
+    <input
+        type="text"
+        name="telephone"
+        class="form-control"
+        value="{{ eleve.telephone or '' }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+    <label>Email</label>
+
+    <input
+        type="email"
+        name="email"
+        class="form-control"
+        value="{{ eleve.email or '' }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+    <label>Classe</label>
+
+    <select
+        name="classe_id"
+        class="form-select"
+        required>
+
+        {% for c in classes %}
+
+        <option
+            value="{{ c.id }}"
+            {% if eleve.classe_id == c.id %}selected{% endif %}>
+
+            {{ c.nom }}
+
+        </option>
+
         {% endfor %}
-    {% endif %}
-{% endwith %}
 
-            <form method="POST">
+    </select>
 
-                <div class="mb-3">
-                    <label>Matricule</label>
-                    <input type="text" name="matricule" class="form-control"
-                           value="{{ eleve.matricule }}" required>
-                </div>
+</div>
 
-                <div class="mb-3">
-                    <label>Nom</label>
-                    <input type="text" name="nom" class="form-control"
-                           value="{{ eleve.nom }}" required>
-                </div>
+<div class="col-md-4 mb-3">
 
-                <div class="mb-3">
-                    <label>Postnom</label>
-                    <input type="text" name="postnom" class="form-control"
-                           value="{{ eleve.postnom }}" required>
-                </div>
+    <label>Année scolaire</label>
 
-                <div class="mb-3">
-                    <label>Prénom</label>
-                    <input type="text" name="prenom" class="form-control"
-                           value="{{ eleve.prenom }}" required>
-                </div>
+    <input
+        type="text"
+        name="annee_id"
+        class="form-control"
+        value="{{ eleve.annee_id or '' }}">
 
-                <div class="mb-3">
-                    <label>Sexe</label>
+</div>
 
-                    <select name="sexe" class="form-select">
+<div class="col-md-6 mb-3">
 
-                        <option value="M"
-                        {% if eleve.sexe=="M" %}selected{% endif %}>
-                            Masculin
-                        </option>
+    <label>Nom du parent / tuteur</label>
 
-                        <option value="F"
-                        {% if eleve.sexe=="F" %}selected{% endif %}>
-                            Féminin
-                        </option>
+    <input
+        type="text"
+        name="nom_parent"
+        class="form-control"
+        value="{{ eleve.nom_parent or '' }}">
 
-                    </select>
+</div>
 
-                </div>
+<div class="col-md-3 mb-3">
 
-                <button class="btn btn-success">
-                    Enregistrer les modifications
+    <label>Téléphone du parent</label>
+
+    <input
+        type="text"
+        name="telephone_parent"
+        class="form-control"
+        value="{{ eleve.telephone_parent or '' }}">
+
+</div>
+
+<div class="col-md-3 mb-3">
+
+    <label>Profession du parent</label>
+
+    <input
+        type="text"
+        name="profession_parent"
+        class="form-control"
+        value="{{ eleve.profession_parent or '' }}">
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+
+            <a
+                href="{{ url_for('eleves') }}"
+                class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left-circle"></i>
+
+                Retour à la liste
+
+            </a>
+
+            <div>
+
+                <button
+                    type="reset"
+                    class="btn btn-warning">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    Réinitialiser
+
                 </button>
 
-                <a href="{{ url_for('eleves') }}" class="btn btn-secondary">
-                    Annuler
-                </a>
+                <button
+                    type="submit"
+                    class="btn btn-success">
 
-            </form>
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    Enregistrer les modifications
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -91,21 +311,90 @@
 
 </div>
 
-<div class="mb-3">
-    <label>Classe</label>
-
-    <select name="classe_id" class="form-control" required>
-
-        <option value="">Sélectionner une classe</option>
-
-        {% for c in classes %}
-            <option value="{{ c.id }}">
-                {{ c.nom }}
-            </option>
-        {% endfor %}
-
-    </select>
 </div>
 
-</body>
-</html>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ====================================== -->
+<!-- JAVASCRIPT -->
+<!-- ====================================== -->
+
+<script>
+
+// ======================================
+// Aperçu de la photo
+// ======================================
+
+const inputPhoto = document.querySelector('input[name="photo"]');
+
+if(inputPhoto){
+
+    inputPhoto.addEventListener("change",function(e){
+
+        const fichier = e.target.files[0];
+
+        if(!fichier) return;
+
+        const lecteur = new FileReader();
+
+        lecteur.onload = function(event){
+
+            const img = document.querySelector(".img-thumbnail");
+
+            if(img){
+
+                img.src = event.target.result;
+
+            }
+
+        }
+
+        lecteur.readAsDataURL(fichier);
+
+    });
+
+}
+
+// ======================================
+// Confirmation avant fermeture
+// ======================================
+
+const formulaire = document.querySelector("form");
+
+let formulaireModifie = false;
+
+formulaire.querySelectorAll("input, select, textarea").forEach(function(champ){
+
+    champ.addEventListener("change",function(){
+
+        formulaireModifie = true;
+
+    });
+
+});
+
+window.addEventListener("beforeunload",function(e){
+
+    if(formulaireModifie){
+
+        e.preventDefault();
+
+        e.returnValue="";
+
+    }
+
+});
+
+console.log("Module Modifier Élève chargé.");
+
+</script>
+
+{% endblock %}

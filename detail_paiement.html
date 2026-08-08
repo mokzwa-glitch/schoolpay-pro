@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Détail du paiement{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>
+                <i class="bi bi-receipt"></i>
+                Détail du paiement
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="30%">Numéro de reçu</th>
+                    <td>{{ paiement.numero_recu }}</td>
+                </tr>
+
+                <tr>
+                    <th>Élève</th>
+                    <td>
+                        {{ paiement.eleve.nom }}
+                        {{ paiement.eleve.postnom }}
+                        {{ paiement.eleve.prenom }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Matricule</th>
+                    <td>{{ paiement.eleve.matricule }}</td>
+                </tr>
+
+                <tr>
+                    <th>Classe</th>
+                    <td>
+                        {{ paiement.eleve.classe.nom if paiement.eleve.classe else "-" }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Motif</th>
+                    <td>{{ paiement.motif.nom }}</td>
+                </tr>
+
+                <tr>
+                    <th>Montant</th>
+                    <td>{{ paiement.montant }} {{ paiement.devise }}</td>
+                </tr>
+
+                <tr>
+                    <th>Mode de paiement</th>
+                    <td>{{ paiement.mode_paiement }}</td>
+                </tr>
+
+                <tr>
+                    <th>Référence</th>
+                    <td>{{ paiement.reference or "-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Observation</th>
+                    <td>{{ paiement.observation or "-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Date</th>
+                    <td>
+                        {{ paiement.date_paiement.strftime("%d/%m/%Y %H:%M") }}
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="text-end">
+
+                <a href="{{ url_for('paiements') }}"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Retour
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

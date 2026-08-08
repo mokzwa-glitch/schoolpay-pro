@@ -1,221 +1,373 @@
 {% extends "base.html" %}
 
-{% block title %}Gestion des classes{% endblock %}
+{% block title %}
+
+Gestion des classes
+
+{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
-            <i class="bi bi-building"></i>
-            Gestion des classes
-        </h2>
+<div>
 
-    </div>
+<h2>
 
-    <!-- Recherche -->
+<i class="bi bi-building"></i>
 
-    <form method="GET" action="{{ url_for('classes') }}" class="mb-4">
+Gestion des classes
 
-        <div class="input-group">
+</h2>
 
-            <input
-                type="text"
-                name="recherche"
-                class="form-control"
-                placeholder="Rechercher une classe..."
-                value="{{ request.args.get('recherche','') }}">
+<p class="text-muted">
 
-            <button class="btn btn-primary">
+Créer, modifier et supprimer les classes.
 
-                <i class="bi bi-search"></i>
+</p>
 
-                Rechercher
+</div>
 
-            </button>
+<div>
 
-            <a href="{{ url_for('classes') }}" class="btn btn-secondary">
+<span class="badge bg-primary fs-6">
 
-                <i class="bi bi-arrow-clockwise"></i>
+{{ classes|length }} classe(s)
 
-                Actualiser
+</span>
 
-            </a>
+</div>
 
-        </div>
+</div>
 
-    </form>
+<!-- AJOUT -->
 
-    <!-- Formulaire -->
+<div class="card shadow mb-4">
 
-    <div class="card shadow mb-4">
+<div class="card-header bg-primary text-white">
 
-        <div class="card-header bg-primary text-white">
+<i class="bi bi-plus-circle-fill"></i>
 
-            <i class="bi bi-plus-circle-fill"></i>
+Ajouter une classe
 
-            Ajouter une classe
+</div>
 
-        </div>
+<div class="card-body">
 
-        <div class="card-body">
+<form method="POST">
 
-            <form method="POST">
+<div class="row">
 
-                <div class="row">
+<div class="col-md-10">
 
-                    <div class="col-md-10 mb-2">
+<input
 
-                        <input
-                            type="text"
-                            name="nom"
-                            class="form-control"
-                            placeholder="Nom de la classe"
-                            required>
+type="text"
 
-                    </div>
+name="nom"
 
-                    <div class="col-md-2 mb-2">
+class="form-control"
 
-                        <button class="btn btn-success w-100">
+placeholder="Nom de la classe"
 
-                            <i class="bi bi-plus-circle"></i>
+required>
 
-                            Ajouter
+</div>
 
-                        </button>
+<div class="col-md-2 d-grid">
 
-                    </div>
+<button
 
-                </div>
+type="submit"
 
-            </form>
+class="btn btn-success">
 
-        </div>
+<i class="bi bi-save"></i>
 
-    </div>
+Ajouter
 
-    <!-- Tableau -->
+</button>
 
-    <div class="card shadow">
+</div>
 
-        <div class="card-header bg-success text-white d-flex justify-content-between">
+</div>
 
-            <span>
+</form>
 
-                <i class="bi bi-table"></i>
+</div>
 
-                Liste des classes
+</div>
+<!-- ====================================== -->
+<!-- RECHERCHE -->
+<!-- ====================================== -->
 
-            </span>
+<div class="card shadow mb-4">
 
-            <span class="badge bg-light text-dark">
+    <div class="card-body">
 
-                {{ classes|length }} classe(s)
+        <form method="GET" action="{{ url_for('classes') }}">
 
-            </span>
+            <div class="input-group">
 
-        </div>
+                <input
+                    type="text"
+                    name="recherche"
+                    class="form-control"
+                    placeholder="Rechercher une classe..."
+                    value="{{ request.args.get('recherche','') }}">
 
-        <div class="card-body table-responsive">
+                <button
+                    class="btn btn-primary">
 
-            <table class="table table-striped table-hover align-middle">
+                    <i class="bi bi-search"></i>
 
-                <thead class="table-dark">
+                    Rechercher
 
-                    <tr>
+                </button>
 
-                        <th>N°</th>
-                        <th>Nom de la classe</th>
-                        <th class="text-center">Nombre d'élèves</th>
-                        <th class="text-center">Actions</th>
+                <a
+                    href="{{ url_for('classes') }}"
+                    class="btn btn-secondary">
 
-                    </tr>
+                    <i class="bi bi-arrow-clockwise"></i>
 
-                </thead>
+                    Actualiser
 
-                <tbody>
+                </a>
 
-                {% for c in classes %}
+            </div>
 
-                    <tr>
-
-                        <td>{{ loop.index }}</td>
-
-                        <td>
-
-                            <strong>{{ c.nom }}</strong>
-
-                        </td>
-
-                        <td class="text-center">
-
-                            <span class="badge bg-primary">
-
-                                {{ c.eleves|length }}
-
-                            </span>
-
-                        </td>
-
-                        <td class="text-center">
-
-                            <a
-                                href="{{ url_for('modifier_classe', id=c.id) }}"
-                                class="btn btn-warning btn-sm"
-                                title="Modifier">
-
-                                <i class="bi bi-pencil-square"></i>
-
-                            </a>
-
-                            <a
-                                href="{{ url_for('eleves') }}"
-                                class="btn btn-primary btn-sm"
-                                title="Voir les élèves">
-
-                                <i class="bi bi-people-fill"></i>
-
-                            </a>
-
-                            <a
-                                href="{{ url_for('supprimer_classe', id=c.id) }}"
-                                class="btn btn-danger btn-sm"
-                                title="Supprimer"
-                                onclick="return confirm('Supprimer la classe {{ c.nom }} ?');">
-
-                                <i class="bi bi-trash"></i>
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                {% else %}
-
-                    <tr>
-
-                        <td colspan="4" class="text-center text-muted">
-
-                            Aucune classe enregistrée.
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
+        </form>
 
     </div>
 
 </div>
+
+<!-- ====================================== -->
+<!-- LISTE DES CLASSES -->
+<!-- ====================================== -->
+
+<div class="card shadow">
+
+    <div class="card-header bg-success text-white d-flex justify-content-between">
+
+        <span>
+
+            <i class="bi bi-table"></i>
+
+            Liste des classes
+
+        </span>
+
+        <span class="badge bg-light text-dark">
+
+            {{ classes|length }} classe(s)
+
+        </span>
+
+    </div>
+
+    <div class="card-body table-responsive">
+
+        <table class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>N°</th>
+
+                    <th>Nom de la classe</th>
+
+                    <th>Nombre d'élèves</th>
+
+                    <th class="text-center">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for c in classes %}
+
+                <tr>
+
+                    <td>
+
+                        {{ loop.index }}
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            {{ c.nom }}
+
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-primary">
+
+                            {{ c.eleves|length }}
+
+                        </span>
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <!-- ====================================== -->
+<!-- ACTIONS -->
+<!-- ====================================== -->
+
+<a
+    href="{{ url_for('modifier_classe', id=c.id) }}"
+    class="btn btn-warning btn-sm"
+    title="Modifier">
+
+    <i class="bi bi-pencil-square"></i>
+
+</a>
+
+<a
+    href="{{ url_for('supprimer_classe', id=c.id) }}"
+    class="btn btn-danger btn-sm"
+    title="Supprimer"
+
+    onclick="return confirm('Voulez-vous vraiment supprimer cette classe ?');">
+
+    <i class="bi bi-trash-fill"></i>
+
+</a>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td colspan="4" class="text-center p-5">
+
+<i class="bi bi-building fs-1 text-secondary"></i>
+
+<br><br>
+
+<h5>
+
+Aucune classe enregistrée.
+
+</h5>
+
+<p class="text-muted">
+
+Commencez par ajouter une nouvelle classe.
+
+</p>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ====================================== -->
+<!-- JAVASCRIPT -->
+<!-- ====================================== -->
+
+<script>
+
+// ======================================
+// Animation des cartes
+// ======================================
+
+document.querySelectorAll(".card").forEach(function(card){
+
+    card.addEventListener("mouseenter",function(){
+
+        this.style.transform="translateY(-5px)";
+
+        this.style.transition=".30s";
+
+        this.style.boxShadow="0 12px 20px rgba(0,0,0,.15)";
+
+    });
+
+    card.addEventListener("mouseleave",function(){
+
+        this.style.transform="translateY(0px)";
+
+        this.style.boxShadow="";
+
+    });
+
+});
+
+
+// ======================================
+// Confirmation suppression
+// ======================================
+
+document.querySelectorAll(".btn-danger").forEach(function(btn){
+
+    btn.addEventListener("click",function(e){
+
+        if(!confirm("Voulez-vous vraiment supprimer cette classe ?")){
+
+            e.preventDefault();
+
+        }
+
+    });
+
+});
+
+
+// ======================================
+// Focus automatique sur la recherche
+// ======================================
+
+const recherche = document.querySelector("input[name='recherche']");
+
+if(recherche){
+
+    recherche.focus();
+
+}
+
+
+// ======================================
+// Console
+// ======================================
+
+console.log("===================================");
+
+console.log("SchoolPay Pro 2.0");
+
+console.log("Module : Gestion des classes");
+
+console.log("===================================");
+
+</script>
 
 {% endblock %}

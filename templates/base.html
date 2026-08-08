@@ -1,183 +1,1025 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}SchoolPay Pro{% endblock %}</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <title>
 
-    <style>
+        {{ param.nom_ecole if param else "Complexe Scolaire La Suisse" }}
 
-        body{
-            margin:0;
-            background:#f4f6f9;
-            font-family:Arial, Helvetica, sans-serif;
-        }
+    </title>
 
-        .sidebar{
+    <!-- Bootstrap -->
 
-            position:fixed;
-            top:0;
-            left:0;
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-            width:250px;
-            height:100vh;
+    <!-- Bootstrap Icons -->
 
-            background:#0d6efd;
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
 
-            color:white;
+    <!-- Google Fonts -->
 
-            overflow-y:auto;
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
 
-        }
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
 
-        .logo{
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
-            text-align:center;
-            padding:20px;
-            border-bottom:1px solid rgba(255,255,255,.2);
 
-        }
+    
 
-        .logo img{
+<style>
 
-            width:70px;
-            height:70px;
+/* ===================================================== */
+/* TABLEAUX */
+/* ===================================================== */
 
-        }
+.table tbody tr{
 
-        .logo h3{
+    transition:.25s;
 
-            color:white;
-            margin-top:10px;
+}
 
-        }
+.table tbody tr:hover{
 
-        .sidebar a{
+    background:#edf5ff;
 
-            display:block;
+    transform:scale(1.005);
 
-            color:white;
+}
 
-            text-decoration:none;
+/* ===================================================== */
+/* BOUTONS */
+/* ===================================================== */
 
-            padding:15px 20px;
+.btn{
 
-            transition:.3s;
+    transition:.30s;
 
-        }
+}
 
-        .sidebar a:hover{
+.btn:hover{
 
-            background:#084298;
-            padding-left:28px;
+    transform:translateY(-2px);
 
-        }
+    box-shadow:0 6px 15px rgba(0,0,0,.18);
 
-        .sidebar a.active{
+}
 
-            background:#084298;
-            border-left:5px solid #ffc107;
+/* ===================================================== */
+/* BADGES */
+/* ===================================================== */
 
-        }
+.badge{
 
-        .content{
+    font-size:13px;
 
-            margin-left:250px;
-            padding:20px;
+    padding:7px 10px;
 
-        }
+}
 
-        .card{
+/* ===================================================== */
+/* CARTES */
+/* ===================================================== */
 
-            border:none;
-            border-radius:12px;
-            box-shadow:0 3px 10px rgba(0,0,0,.08);
+.card{
 
-        }
+    transition:.35s;
 
-        footer{
+}
 
-            margin-top:50px;
-            text-align:center;
-            color:#666;
+.card:hover{
 
-        }
+    transform:translateY(-6px);
 
-    </style>
+    box-shadow:0 12px 25px rgba(0,0,0,.20);
+
+}
+
+/* ===================================================== */
+/* INPUTS */
+/* ===================================================== */
+
+.form-control:focus,
+
+.form-select:focus{
+
+    border-color:#0d6efd;
+
+    box-shadow:0 0 8px rgba(13,110,253,.35);
+
+}
+
+/* ===================================================== */
+/* SCROLLBAR */
+/* ===================================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#0d6efd;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#f3f3f3;
+
+}
+
+/* ========================================= */
+/* PRELOADER */
+/* ========================================= */
+
+#loader{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:white;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999999;
+
+    transition:.6s;
+
+}
+
+#loader.cache{
+
+    opacity:0;
+
+    visibility:hidden;
+
+}
+
+/* ========================================= */
+/* BOUTON RETOUR EN HAUT */
+/* ========================================= */
+
+#btnTop{
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:25px;
+
+    width:55px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#0d6efd;
+
+    color:white;
+
+    font-size:22px;
+
+    display:none;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.30);
+
+    z-index:999;
+
+    transition:.3s;
+
+}
+
+#btnTop:hover{
+
+    background:#084298;
+
+    transform:translateY(-5px);
+
+}
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+body{
+
+    background:#eef2f7;
+
+    overflow-x:hidden;
+
+    transition:.4s;
+
+}
+
+/* =========================================== */
+/* SIDEBAR */
+/* =========================================== */
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:270px;
+
+    height:100vh;
+
+    background:linear-gradient(180deg,#0d6efd,#084298);
+
+    transition:.35s;
+
+    overflow-y:auto;
+
+    z-index:1000;
+
+}
+
+.sidebar.reduite{
+
+    width:90px;
+
+}
+
+.sidebar.reduite h3,
+
+.sidebar.reduite small,
+
+.sidebar.reduite span{
+
+    display:none;
+
+}
+
+.sidebar.reduite a{
+
+    text-align:center;
+
+}
+
+.sidebar.reduite a i{
+
+    margin-right:0;
+
+    font-size:22px;
+
+}
+
+.content{
+
+    margin-left:270px;
+
+    transition:.35s;
+
+}
+
+.content.large{
+
+    margin-left:90px;
+
+}
+
+/* ====================== */
+/* LOGO */
+/* ====================== */
+
+.logo{
+
+    text-align:center;
+
+    padding:30px 20px;
+
+    border-bottom:1px solid rgba(255,255,255,.15);
+
+}
+
+.logo img{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:white;
+
+    padding:8px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+}
+
+.logo h3{
+
+    margin-top:15px;
+
+    font-size:23px;
+
+    font-weight:bold;
+
+}
+
+.logo small{
+
+    display:block;
+
+    opacity:.9;
+
+}
+
+/* ====================== */
+/* MENU */
+/* ====================== */
+
+.sidebar a{
+
+    display:block;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:15px 22px;
+
+    transition:.3s;
+
+}
+
+.sidebar a:hover{
+
+    background:rgba(255,255,255,.15);
+
+    padding-left:30px;
+
+}
+
+.sidebar a.active{
+
+    background:white;
+
+    color:#0d6efd;
+
+    border-left:6px solid gold;
+
+    font-weight:bold;
+
+}
+
+.sidebar i{
+
+    margin-right:10px;
+
+}
+
+/* ====================== */
+/* CONTENU */
+/* ====================== */
+
+.content{
+
+    margin-left:270px;
+
+    padding:25px;
+
+}
+
+/* ====================== */
+/* TOPBAR */
+/* ====================== */
+
+.topbar{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:18px 25px;
+
+    margin-bottom:25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.table{
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+}
+
+.btn{
+
+    border-radius:10px;
+
+}
+
+/* ====================== */
+/* MODE SOMBRE */
+/* ====================== */
+
+.dark-mode{
+
+    background:#181818!important;
+
+    color:white!important;
+
+}
+
+.dark-mode .content{
+
+    background:#181818!important;
+
+}
+
+.dark-mode .topbar{
+
+    background:#222!important;
+
+}
+
+.dark-mode .card{
+
+    background:#2c2c2c!important;
+
+    color:white!important;
+
+}
+
+.dark-mode .table{
+
+    color:white!important;
+
+}
+
+.dark-mode .table td{
+
+    background:#333!important;
+
+}
+
+.dark-mode .table th{
+
+    background:#111!important;
+
+}
+
+.dark-mode .form-control,
+
+.dark-mode .form-select{
+
+    background:#333!important;
+
+    color:white!important;
+
+    border:1px solid #555;
+
+}
+
+.dark-mode .dropdown-menu{
+
+    background:#333;
+
+}
+
+.dark-mode .dropdown-item{
+
+    color:white;
+
+}
+
+/* ====================== */
+/* RESPONSIVE */
+/* ====================== */
+
+@media(max-width:992px){
+
+.sidebar{
+
+    width:90px;
+
+}
+
+.sidebar h3,
+
+.sidebar small,
+
+.sidebar span{
+
+    display:none;
+
+}
+
+.content{
+
+    margin-left:90px;
+
+}
+
+}
+
+.card{
+
+    animation:apparition .6s ease;
+
+}
+
+@keyframes apparition{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/* ==========================================
+   BARRE CONTACT
+   ========================================== */
+
+.contact-bar {
+
+    margin: 25px auto;
+
+    padding: 18px;
+
+    max-width: 1100px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, .08);
+
+    text-align: center;
+
+}
+
+
+.contact-title {
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    color: #123b73;
+
+    margin-bottom: 12px;
+
+}
+
+
+.contact-links {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+}
+
+
+.contact-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 14px;
+
+    border-radius: 8px;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition: .2s;
+
+}
+
+
+.contact-btn:hover {
+
+    transform: translateY(-2px);
+
+    color: white;
+
+    opacity: .9;
+
+}
+
+
+/* WhatsApp */
+
+.whatsapp {
+
+    background: #25D366;
+
+}
+
+
+/* Téléphone */
+
+.phone {
+
+    background: #075fe8;
+
+}
+
+
+/* Email */
+
+.email {
+
+    background: #dc2626;
+
+}
+
+
+/* Facebook */
+
+.facebook {
+
+    background: #1877F2;
+
+}
+
+
+/* Instagram */
+
+.instagram {
+
+    background:
+        linear-gradient(
+            45deg,
+            #f58529,
+            #dd2a7b,
+            #8134af
+        );
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .contact-links {
+
+        flex-direction: column;
+
+    }
+
+    .contact-btn {
+
+        width: 200px;
+
+        justify-content: center;
+
+    }
+
+}
+
+.whatsapp {
+    background: #25D366;
+    color: white;
+}
+
+.whatsapp:hover {
+    background: #1ebe5d;
+    color: white;
+    transform: translateY(-2px);
+}
+
+</style>
 
 </head>
 
 <body>
 
-<div class="sidebar">
+<!-- ========================================= -->
+<!-- PRELOADER -->
+<!-- ========================================= -->
 
-    <div class="logo">
+<div id="loader">
 
-        <img src="{{ url_for('static', filename='images/logo.png') }}">
-
-        <h3>SchoolPay Pro</h3>
+    <div class="spinner-border text-primary"
+         style="width:70px;height:70px;"
+         role="status">
 
     </div>
 
+    <h4 class="mt-4 text-primary">
+
+        Chargement de SchoolPay Pro...
+
+    </h4>
+
+</div>
+
+<!-- ====================================================== -->
+<!-- SIDEBAR -->
+<!-- ====================================================== -->
+
+<div class="sidebar">
+
+    <!-- ===================== -->
+    <!-- LOGO -->
+    <!-- ===================== -->
+
+    <div class="logo">
+
+        {% if param and param.logo %}
+
+            <img
+                src="{{ url_for('static', filename='uploads/' + param.logo) }}"
+                alt="Logo">
+
+        {% else %}
+
+            <img
+                src="{{ url_for('static', filename='images/logo.png') }}"
+                alt="Logo">
+
+        {% endif %}
+
+        <h3>
+
+            {{ param.nom_ecole if param else "Complexe Scolaire La Suisse" }}
+
+        </h3>
+
+        <small>
+
+            SchoolPay Pro 2.0
+
+        </small>
+
+    </div>
+
+    <!-- ===================== -->
+    <!-- UTILISATEUR -->
+    <!-- ===================== -->
+
+    <div class="text-center py-3">
+
+        {% if session.get("photo") %}
+
+            <img
+                src="{{ url_for('static', filename='uploads/' + session.get('photo')) }}"
+                class="rounded-circle border border-3 border-white"
+                width="80"
+                height="80">
+
+        {% else %}
+
+            <img
+                src="{{ url_for('static', filename='images/avatar.png') }}"
+                class="rounded-circle border border-3 border-white"
+                width="80"
+                height="80">
+
+        {% endif %}
+
+        <h6 class="mt-3 mb-1">
+
+            {{ session.get("user","Utilisateur") }}
+
+        </h6>
+
+        <span class="badge bg-warning text-dark">
+
+            {{ session.get("role","Utilisateur") }}
+
+        </span>
+
+    </div>
+
+    <hr class="text-white">
+
+    <!-- ===================== -->
+    <!-- MENU -->
+    <!-- ===================== -->
+
     <a href="{{ url_for('dashboard') }}"
        class="{% if request.endpoint=='dashboard' %}active{% endif %}">
+
         <i class="bi bi-speedometer2"></i>
+
         Tableau de bord
+
     </a>
 
     <a href="{{ url_for('eleves') }}"
        class="{% if request.endpoint=='eleves' %}active{% endif %}">
-        <i class="bi bi-people-fill"></i>
+
+        <i class="bi bi-mortarboard-fill"></i>
+
         Élèves
+
     </a>
 
     <a href="{{ url_for('classes') }}"
        class="{% if request.endpoint=='classes' %}active{% endif %}">
+
         <i class="bi bi-building"></i>
+
         Classes
+
     </a>
 
     <a href="{{ url_for('paiements') }}"
        class="{% if request.endpoint=='paiements' %}active{% endif %}">
+
         <i class="bi bi-cash-stack"></i>
+
         Paiements
+
     </a>
 
-    {% if session.get("role")=="Administrateur" %}
+    <a href="{{ url_for('motifs') }}"
+       class="{% if request.endpoint=='motifs' %}active{% endif %}">
+
+        <i class="bi bi-tags-fill"></i>
+
+        Motifs de paiement
+
+    </a>
+
+    <a href="{{ url_for('cartes') }}"
+       class="{% if request.endpoint=='cartes' %}active{% endif %}">
+
+        <i class="bi bi-person-vcard-fill"></i>
+
+        Cartes scolaires
+
+    </a>
+
+    <a href="{{ url_for('rapport_paiements') }}">
+
+        <i class="bi bi-file-earmark-pdf-fill"></i>
+
+        Rapport PDF
+
+    </a>
+
+    <a href="{{ url_for('export_excel') }}">
+
+        <i class="bi bi-file-earmark-excel-fill"></i>
+
+        Export Excel
+
+    </a>
+
+    {% if session.get("role") == "Administrateur" %}
 
     <a href="{{ url_for('utilisateurs') }}"
        class="{% if request.endpoint=='utilisateurs' %}active{% endif %}">
-        <i class="bi bi-person-circle"></i>
+
+        <i class="bi bi-people-fill"></i>
+
         Utilisateurs
+
     </a>
 
-    {% endif %}
+    <a href="{{ url_for('parametres') }}"
+       class="{% if request.endpoint=='parametres' %}active{% endif %}">
 
-    <a href="{{ url_for('backup') }}">
-        <i class="bi bi-cloud-arrow-down"></i>
-        Sauvegarde
-    </a>
-
-    {% if session.get("role")=="Administrateur" %}
-
-    <a href="{{ url_for('parametres') }}">
         <i class="bi bi-gear-fill"></i>
+
         Paramètres
+
+    </a>
+
+    <a href="{{ url_for('backup') }}"
+       class="{% if request.endpoint=='backup' %}active{% endif %}">
+
+        <i class="bi bi-cloud-arrow-up-fill"></i>
+
+        Sauvegarde
+
     </a>
 
     {% endif %}
 
-    <a href="{{ url_for('apropos') }}">
-        <i class="bi bi-info-circle"></i>
-        À propos
+    <a href="{{ url_for('historique') }}"
+       class="{% if request.endpoint=='historique' %}active{% endif %}">
+
+        <i class="bi bi-clock-history"></i>
+
+        Historique
+
     </a>
 
-    <a href="{{ url_for('logout') }}" class="text-warning">
+    <a href="{{ url_for('notifications') }}"
+       class="{% if request.endpoint=='notifications' %}active{% endif %}">
+
+        <i class="bi bi-bell-fill"></i>
+
+        Notifications
+
+    </a>
+
+    <a href="{{ url_for('apropos') }}"
+       class="{% if request.endpoint=='apropos' %}active{% endif %}">
+
+        <i class="bi bi-info-circle-fill"></i>
+
+        À propos
+
+    </a>
+
+    <hr class="text-white">
+
+    <a href="{{ url_for('logout') }}"
+       class="text-warning">
 
         <i class="bi bi-box-arrow-right"></i>
 
@@ -187,48 +1029,244 @@
 
 </div>
 
+<!-- ====================================================== -->
+<!-- CONTENU PRINCIPAL -->
+<!-- ====================================================== -->
+
 <div class="content">
 
-    <nav class="navbar bg-white rounded shadow-sm mb-4">
+    <!-- ====================================================== -->
+<!-- TOPBAR -->
+<!-- ====================================================== -->
 
-        <div class="container-fluid">
+<div class="topbar">
 
-            <div>
+    <!-- =========================================== -->
+<!-- BOUTON SIDEBAR -->
+<!-- =========================================== -->
 
-                <h5 class="mb-0">
+<button
+    id="toggleSidebar"
+    class="btn btn-primary shadow-sm me-3">
 
-                    Bienvenue
-                    <strong>{{ session.get("user","Utilisateur") }}</strong>
+    <i class="bi bi-list fs-4"></i>
 
-                </h5>
+</button>
 
-                <small class="text-muted">
+    <!-- ========================= -->
+    <!-- TITRE -->
+    <!-- ========================= -->
 
-                    Gestion des frais scolaires
+    <div>
 
-                </small>
+        <h4 class="fw-bold mb-0">
 
-            </div>
+            Bonjour,
 
-            <span class="badge bg-success fs-6">
+            <span class="text-primary">
 
-                {{ session.get("role","Utilisateur") }}
+                {{ session.get("user","Utilisateur") }}
 
             </span>
 
+        </h4>
+
+        <small class="text-muted">
+
+            Bienvenue sur
+
+            <strong>
+
+                {{ param.nom_ecole if param else "Complexe Scolaire La Suisse" }}
+
+            </strong>
+
+        </small>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- HEURE + ACTIONS -->
+    <!-- ========================= -->
+
+    <div class="d-flex align-items-center gap-3">
+
+        <!-- Horloge -->
+
+        <div class="text-end">
+
+            <div
+                id="heure"
+                class="fw-bold text-primary fs-4">
+
+                00:00:00
+
+            </div>
+
+            <small
+                id="date"
+                class="text-muted">
+
+                ---
+
+            </small>
+
         </div>
 
-    </nav>
+        <!-- Notifications -->
 
-    <!-- Messages Flash -->
+        <a
+            href="{{ url_for('notifications') }}"
+            class="btn btn-light position-relative shadow-sm">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+            <i class="bi bi-bell-fill fs-5"></i>
 
-        {% if messages %}
+            {% if nb_notifications and nb_notifications > 0 %}
 
-            {% for categorie,message in messages %}
+            <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-            <div class="alert alert-{{ categorie }} alert-dismissible fade show">
+                {{ nb_notifications }}
+
+            </span>
+
+            {% endif %}
+
+        </a>
+
+        <!-- Mode sombre -->
+
+        <button
+            id="darkModeBtn"
+            class="btn btn-dark shadow-sm">
+
+            <i class="bi bi-moon-stars-fill"></i>
+
+        </button>
+
+        <!-- Profil -->
+
+        <div class="dropdown">
+
+            <button
+                class="btn btn-outline-primary dropdown-toggle"
+                data-bs-toggle="dropdown">
+
+                <i class="bi bi-person-circle"></i>
+
+                {{ session.get("user") }}
+
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+
+                    <h6 class="dropdown-header">
+
+                        Connecté en tant que
+
+                    </h6>
+
+                </li>
+
+                <li>
+
+                    <span class="dropdown-item-text">
+
+                        <strong>
+
+                            {{ session.get("user") }}
+
+                        </strong>
+
+                    </span>
+
+                </li>
+
+                <li>
+
+                    <span class="dropdown-item-text text-muted">
+
+                        {{ session.get("role") }}
+
+                    </span>
+
+                </li>
+
+                <li>
+
+                    <hr class="dropdown-divider">
+
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="{{ url_for('parametres') }}">
+
+                        <i class="bi bi-gear-fill"></i>
+
+                        Paramètres
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="{{ url_for('apropos') }}">
+
+                        <i class="bi bi-info-circle-fill"></i>
+
+                        À propos
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <hr class="dropdown-divider">
+
+                </li>
+
+                <li>
+
+                    <a
+                        class="dropdown-item text-danger"
+                        href="{{ url_for('logout') }}">
+
+                        <i class="bi bi-box-arrow-right"></i>
+
+                        Déconnexion
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ====================================================== -->
+<!-- MESSAGES FLASH -->
+<!-- ====================================================== -->
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        {% for categorie, message in messages %}
+
+            <div class="alert alert-{{ categorie }} alert-dismissible fade show shadow-sm">
 
                 {{ message }}
 
@@ -236,43 +1274,810 @@
                     type="button"
                     class="btn-close"
                     data-bs-dismiss="alert">
+
                 </button>
 
             </div>
 
-            {% endfor %}
+        {% endfor %}
 
-        {% endif %}
+    {% endif %}
 
-    {% endwith %}
+{% endwith %}
 
-    {% block content %}
+<!-- ====================================================== -->
+<!-- CONTENU DES PAGES -->
+<!-- ====================================================== -->
 
-    {% endblock %}
+{% block content %}
 
-    <footer>
+{% endblock %}
 
-        <hr>
+<!-- ====================================================== -->
+<!-- FOOTER -->
+<!-- ====================================================== -->
 
-        <p>
+<hr class="mt-5">
 
-            <strong>SchoolPay Pro</strong><br>
+<footer class="text-center mb-3">
 
-            Système de gestion des frais scolaires<br>
+    <div class="card">
 
-            Développé avec Flask • MySQL • Bootstrap<br>
+        <div class="card-body">
 
-            © 2026 Tous droits réservés
+            <h5 class="text-primary">
 
-        </p>
+                {{ param.nom_ecole if param else "Complexe Scolaire La Suisse" }}
 
-    </footer>
+            </h5>
+
+            <p class="mb-1">
+
+                {{ param.adresse if param else "Kinshasa - RDC" }}
+
+            </p>
+
+            <p class="mb-1">
+
+                {% if param %}
+
+                    Téléphone :
+
+                    {{ param.telephone }}
+
+                {% endif %}
+
+                {% if param and param.email %}
+
+                    |
+
+                    {{ param.email }}
+
+                {% endif %}
+
+            </p>
+
+            {% if param and param.site_web %}
+
+            <p class="mb-1">
+
+                {{ param.site_web }}
+
+            </p>
+
+            {% endif %}
+
+            <small class="text-muted">
+
+                © 2026 SchoolPay Pro Enterprise
+
+                |
+
+                Développé avec Flask & Bootstrap
+
+            </small>
+
+        </div>
+
+    </div>
+
+</footer>
 
 </div>
 
+<!-- ====================================================== -->
+<!-- BOOTSTRAP -->
+<!-- ====================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ====================================================== -->
+<!-- HORLOGE -->
+<!-- ====================================================== -->
+
+<script>
+
+function mettreAJourHeure(){
+
+    const maintenant = new Date();
+
+    const heure = maintenant.toLocaleTimeString("fr-FR");
+
+    const date = maintenant.toLocaleDateString(
+
+        "fr-FR",
+
+        {
+
+            weekday:"long",
+
+            day:"2-digit",
+
+            month:"long",
+
+            year:"numeric"
+
+        }
+
+    );
+
+    const h = document.getElementById("heure");
+
+    const d = document.getElementById("date");
+
+    if(h){
+
+        h.innerHTML = heure;
+
+    }
+
+    if(d){
+
+        d.innerHTML = date;
+
+    }
+
+}
+
+mettreAJourHeure();
+
+setInterval(
+
+    mettreAJourHeure,
+
+    1000
+
+);
+
+</script>
+
+<!-- ====================================================== -->
+<!-- FERMETURE AUTO DES ALERTES -->
+<!-- ====================================================== -->
+
+<script>
+
+setTimeout(function(){
+
+    document.querySelectorAll(".alert").forEach(function(alert){
+
+        bootstrap.Alert.getOrCreateInstance(alert).close();
+
+    });
+
+},5000);
+
+</script>
+
+<!-- ====================================================== -->
+<!-- MODE SOMBRE -->
+<!-- ====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const bouton = document.getElementById("darkModeBtn");
+
+    if (!bouton) return;
+
+    // ===========================
+    // Chargement du thème enregistré
+    // ===========================
+
+    if (localStorage.getItem("theme") === "dark") {
+
+        document.body.classList.add("dark-mode");
+
+        bouton.innerHTML =
+        '<i class="bi bi-sun-fill"></i>';
+
+    } else {
+
+        bouton.innerHTML =
+        '<i class="bi bi-moon-stars-fill"></i>';
+
+    }
+
+    // ===========================
+    // Changement du thème
+    // ===========================
+
+    bouton.addEventListener("click", function () {
+
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+
+            localStorage.setItem("theme", "dark");
+
+            bouton.innerHTML =
+            '<i class="bi bi-sun-fill"></i>';
+
+        } else {
+
+            localStorage.setItem("theme", "light");
+
+            bouton.innerHTML =
+            '<i class="bi bi-moon-stars-fill"></i>';
+
+        }
+
+    });
+
+});
+
+</script>
+
+<!-- ====================================================== -->
+<!-- EFFETS DES CARTES -->
+<!-- ====================================================== -->
+
+<script>
+
+document.querySelectorAll(".card").forEach(function(card){
+
+    card.addEventListener("mouseenter",function(){
+
+        this.style.transform="translateY(-5px)";
+
+        this.style.transition=".3s";
+
+        this.style.boxShadow="0 15px 30px rgba(0,0,0,.18)";
+
+    });
+
+    card.addEventListener("mouseleave",function(){
+
+        this.style.transform="translateY(0px)";
+
+        this.style.boxShadow="0 8px 20px rgba(0,0,0,.08)";
+
+    });
+
+});
+
+</script>
+
+<!-- ====================================================== -->
+<!-- TOOLTIPS BOOTSTRAP -->
+<!-- ====================================================== -->
+
+<script>
+
+const tooltipTriggerList =
+[].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
+tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+
+});
+
+</script>
+
+<!-- ====================================================== -->
+<!-- NOTIFICATIONS -->
+<!-- ====================================================== -->
+
+<div class="dropdown">
+
+    <button
+        class="btn btn-light position-relative shadow-sm"
+        data-bs-toggle="dropdown"
+        title="Notifications">
+
+        <i class="bi bi-bell-fill fs-5"></i>
+
+        {% if nb_notifications and nb_notifications > 0 %}
+
+        <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+            {{ nb_notifications }}
+
+        </span>
+
+        {% endif %}
+
+    </button>
+
+    <div
+        class="dropdown-menu dropdown-menu-end shadow"
+        style="width:360px;">
+
+        <div class="p-3 border-bottom">
+
+            <h6 class="mb-0">
+
+                <i class="bi bi-bell-fill text-warning"></i>
+
+                Notifications
+
+            </h6>
+
+        </div>
+
+        {% if notifications %}
+
+            {% for n in notifications[:5] %}
+
+            <a
+                href="{{ url_for('notifications') }}"
+                class="dropdown-item py-3">
+
+                <div class="d-flex">
+
+                    <div class="me-3">
+
+                        {% if n.type=="success" %}
+
+                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
+
+                        {% elif n.type=="warning" %}
+
+                            <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+
+                        {% elif n.type=="danger" %}
+
+                            <i class="bi bi-x-circle-fill text-danger fs-4"></i>
+
+                        {% else %}
+
+                            <i class="bi bi-info-circle-fill text-primary fs-4"></i>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+
+                            {{ n.titre }}
+
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ n.message }}
+
+                        </small>
+
+                        <br>
+
+                        <small class="text-secondary">
+
+                            {{ n.date_creation.strftime("%d/%m/%Y %H:%M") }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        {% else %}
+
+        <div class="text-center p-4">
+
+            <i class="bi bi-bell-slash fs-1 text-secondary"></i>
+
+            <p class="text-muted mt-2">
+
+                Aucune notification.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <div class="border-top text-center p-2">
+
+            <a
+                href="{{ url_for('notifications') }}"
+                class="btn btn-sm btn-outline-primary">
+
+                Voir toutes les notifications
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const badge=document.querySelector(".badge.bg-danger");
+
+    if(badge){
+
+        badge.animate(
+
+            [
+
+                {transform:"scale(1)"},
+
+                {transform:"scale(1.25)"},
+
+                {transform:"scale(1)"}
+
+            ],
+
+            {
+
+                duration:1200,
+
+                iterations:Infinity
+
+            }
+
+        );
+
+    }
+
+});
+
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const sidebar=document.querySelector(".sidebar");
+
+    const content=document.querySelector(".content");
+
+    const bouton=document.getElementById("toggleSidebar");
+
+    if(bouton){
+
+        bouton.addEventListener("click",function(){
+
+            sidebar.classList.toggle("reduite");
+
+            content.classList.toggle("large");
+
+            if(sidebar.classList.contains("reduite")){
+
+                localStorage.setItem("sidebar","reduite");
+
+            }else{
+
+                localStorage.setItem("sidebar","ouverte");
+
+            }
+
+        });
+
+    }
+
+    if(localStorage.getItem("sidebar")=="reduite"){
+
+        sidebar.classList.add("reduite");
+
+        content.classList.add("large");
+
+    }
+
+});
+
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    // =============================
+    // Animation des compteurs
+    // =============================
+
+    document.querySelectorAll(".counter").forEach(function(compteur){
+
+        let valeurFinale=parseInt(compteur.innerText);
+
+        if(isNaN(valeurFinale)) return;
+
+        let valeur=0;
+
+        let interval=setInterval(function(){
+
+            valeur++;
+
+            compteur.innerHTML=valeur;
+
+            if(valeur>=valeurFinale){
+
+                clearInterval(interval);
+
+            }
+
+        },20);
+
+    });
+
+    // =============================
+    // Confirmation des suppressions
+    // =============================
+
+    document.querySelectorAll(".btn-supprimer").forEach(function(btn){
+
+        btn.addEventListener("click",function(e){
+
+            if(!confirm("Voulez-vous vraiment supprimer cet élément ?")){
+
+                e.preventDefault();
+
+            }
+
+        });
+
+    });
+
+    // =============================
+    // Focus automatique
+    // =============================
+
+    const premierChamp=document.querySelector("input");
+
+    if(premierChamp){
+
+        premierChamp.focus();
+
+    }
+
+});
+
+</script>
+
+<!-- ====================================================== -->
+<!-- SCRIPT PRINCIPAL -->
+<!-- ====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ===========================
+    // Horloge
+    // ===========================
+
+    function mettreAJourHeure() {
+
+        const maintenant = new Date();
+
+        const heure = document.getElementById("heure");
+        const date = document.getElementById("date");
+
+        if (heure) {
+
+            heure.textContent = maintenant.toLocaleTimeString("fr-FR");
+
+        }
+
+        if (date) {
+
+            date.textContent = maintenant.toLocaleDateString(
+                "fr-FR",
+                {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+        }
+
+    }
+
+    mettreAJourHeure();
+
+    setInterval(mettreAJourHeure, 1000);
+
+    // ===========================
+    // Loader
+    // ===========================
+
+    const loader = document.getElementById("loader");
+
+    if (loader) {
+
+        window.addEventListener("load", function () {
+
+            loader.classList.add("cache");
+
+        });
+
+    }
+
+    // ===========================
+    // Bouton retour en haut
+    // ===========================
+
+    const btnTop = document.getElementById("btnTop");
+
+    if (btnTop) {
+
+        window.addEventListener("scroll", function () {
+
+            btnTop.style.display =
+                window.scrollY > 300 ? "block" : "none";
+
+        });
+
+        btnTop.addEventListener("click", function () {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        });
+
+    }
+
+    // ===========================
+    // Fermeture automatique des alertes
+    // ===========================
+
+    setTimeout(function () {
+
+        document.querySelectorAll(".alert").forEach(function (alerte) {
+
+            const instance = bootstrap.Alert.getOrCreateInstance(alerte);
+
+            instance.close();
+
+        });
+
+    }, 5000);
+
+});
+
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+
+    $("#eleve_id").select2({
+
+        placeholder: "Rechercher un élève...",
+
+        allowClear: true,
+
+        width: "100%"
+
+    });
+
+});
+
+</script>
+
+<!-- ==========================================
+     CONTACT SCHOOLPAY PRO
+     ========================================== -->
+
+<div class="contact-bar">
+
+    <div class="contact-title">
+
+        <i class="bi bi-headset"></i>
+
+        Besoin d'aide ?
+
+    </div>
+
+
+    <div class="contact-links">
+
+
+        <!-- ==================================
+             WHATSAPP
+             ================================== -->
+
+        <a
+            href="https://wa.me/243900956273"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-btn whatsapp">
+
+            <i class="bi bi-whatsapp"></i>
+
+            WhatsApp
+
+        </a>
+
+
+        <!-- ==================================
+             TÉLÉPHONE
+             ================================== -->
+
+        <a
+            href="tel:+243900956273"
+            class="contact-btn phone">
+
+            <i class="bi bi-telephone-fill"></i>
+
+            Appeler
+
+        </a>
+
+
+        <!-- ==================================
+             EMAIL
+             ================================== -->
+
+        <a
+            href="mailto:kiesemanungarifis@gmail.com"
+            class="contact-btn email">
+
+            <i class="bi bi-envelope-fill"></i>
+
+            E-mail
+
+        </a>
+
+
+        <!-- ==================================
+             FACEBOOK
+             ================================== -->
+
+        <a
+            href="https://www.facebook.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-btn facebook">
+
+            <i class="bi bi-facebook"></i>
+
+            Facebook
+
+        </a>
+
+
+        <!-- ==================================
+             INSTAGRAM
+             ================================== -->
+
+        <a
+            href="https://www.instagram.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-btn instagram">
+
+            <i class="bi bi-instagram"></i>
+
+            Instagram
+
+        </a>
+
+
+    </div>
+
+</div>
+
+</div>
 
 </body>
 

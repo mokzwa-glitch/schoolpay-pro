@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Erreur 404{% endblock %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+
+    <h1 class="display-1 text-danger">
+
+        404
+
+    </h1>
+
+    <h3>
+
+        Page introuvable
+
+    </h3>
+
+    <p>
+
+        La page demandée n'existe pas.
+
+    </p>
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        class="btn btn-primary">
+
+        Retour
+
+    </a>
+
+</div>
+
+{% endblock %}

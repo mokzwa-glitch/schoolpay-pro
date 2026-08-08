@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reçu de paiement</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f5f5f5;
+            font-family:Arial,Helvetica,sans-serif;
+        }
+
+        .recu{
+            max-width:900px;
+            margin:30px auto;
+            background:white;
+            border-radius:10px;
+            box-shadow:0 0 15px rgba(0,0,0,.15);
+            padding:35px;
+        }
+
+        .logo{
+            width:90px;
+            height:90px;
+            object-fit:contain;
+        }
+
+        .photo{
+            width:120px;
+            height:120px;
+            object-fit:cover;
+            border-radius:10px;
+            border:2px solid #0d6efd;
+        }
+
+        table th{
+            width:35%;
+            background:#f8f9fa;
+        }
+
+        table td,
+        table th{
+            padding:10px;
+            vertical-align:middle;
+        }
+
+        .signature{
+            margin-top:60px;
+        }
+
+        .signature hr{
+            border:1px solid black;
+        }
+
+        @media print{
+
+            body{
+                background:white;
+            }
+
+            .btn{
+                display:none;
+            }
+
+            .recu{
+                box-shadow:none;
+                margin:0;
+                padding:10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="recu">
+
+<div class="row align-items-center">
+
+<div class="col-md-2 text-center">
+
+{% if param and param.logo %}
+
+<img
+src="{{ url_for('static', filename='uploads/' + param.logo) }}"
+class="logo">
+
+{% endif %}
+
+</div>
+
+<div class="col-md-8 text-center">
+
+<h2 class="fw-bold">
+
+{{ param.nom_ecole if param else "Complexe scolaires La Suisse" }}
+
+</h2>
+
+<p>
+
+{{ param.adresse if param else "" }}
+
+</p>
+
+<p>
+
+☎ {{ param.telephone if param else "" }}
+
+</p>
+
+</div>
+
+<div class="col-md-2 text-center">
+
+{% if paiement.eleve.photo %}
+
+<img
+src="{{ url_for('static', filename='uploads/' + paiement.eleve.photo) }}"
+class="photo">
+
+{% endif %}
+
+</div>
+
+</div>
+
+<hr>
+
+<h3 class="text-center text-primary">
+
+<i class="bi bi-receipt-cutoff"></i>
+
+REÇU DE PAIEMENT
+
+</h3>
+
+<br>
+
+<table class="table table-bordered">
+
+<tbody>
+
+<tr>
+
+<th>Numéro du reçu</th>
+
+<td>
+
+<strong>
+
+{{ paiement.numero_recu }}
+
+</strong>
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>Matricule</th>
+
+<td>
+
+{{ paiement.eleve.matricule }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>Nom complet</th>
+
+<td>
+
+{{ paiement.eleve.nom }}
+
+{{ paiement.eleve.postnom }}
+
+{{ paiement.eleve.prenom }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>Classe</th>
+
+<td>
+
+{{ paiement.eleve.classe.nom }}
+
+</td>
+
+</tr>
+
+<tr>
+
+    <th>Motif de paiement</th>
+
+    <td>
+
+        {{ paiement.motif.nom }}
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <th>Montant payé</th>
+
+    <td>
+
+        <strong class="text-success fs-4">
+
+            {{ "%.2f"|format(paiement.montant) }}
+
+            {{ paiement.devise }}
+
+        </strong>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <th>Mode de paiement</th>
+
+    <td>
+
+        {{ paiement.mode_paiement }}
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <th>Référence</th>
+
+    <td>
+
+        {{ paiement.reference or "-" }}
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <th>Date du paiement</th>
+
+    <td>
+
+        {{ paiement.date_paiement.strftime("%d/%m/%Y %H:%M") }}
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <th>Caissier</th>
+
+    <td>
+
+        {{ paiement.utilisateur.username }}
+
+    </td>
+
+</tr>
+
+{% if paiement.observation %}
+
+<tr>
+
+    <th>Observation</th>
+
+    <td>
+
+        {{ paiement.observation }}
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+<br>
+
+<div class="alert alert-success text-center">
+
+    <h5>
+
+        <i class="bi bi-check-circle-fill"></i>
+
+        Paiement enregistré avec succès
+
+    </h5>
+
+    <p>
+
+        Merci d'avoir effectué votre paiement.
+
+    </p>
+
+    <strong>
+
+        Conservez soigneusement ce reçu.
+
+    </strong>
+
+</div>
+
+<div class="row signature">
+
+    <div class="col-md-4 text-center">
+
+        <h6>
+
+            Signature du caissier
+
+        </h6>
+
+        <br><br><br>
+
+        <hr>
+
+        {{ paiement.utilisateur.username }}
+
+    </div>
+
+    <div class="col-md-4 text-center">
+
+        <h6>
+
+            Cachet de l'établissement
+
+        </h6>
+
+        <br><br><br>
+
+        <hr>
+
+        {{ param.nom_ecole if param else "Complexe scolaires La Suisse" }}
+
+    </div>
+
+    <div class="col-md-4 text-center">
+
+        <h6>
+
+            Vérification
+
+        </h6>
+
+        <img
+
+        src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ paiement.numero_recu }}"
+
+        width="140"
+
+        height="140">
+
+        <br>
+
+        <small>
+
+            {{ paiement.numero_recu }}
+
+        </small>
+
+    </div>
+
+</div>
+
+<hr>
+
+<div class="text-center mt-4">
+
+    <button
+        class="btn btn-primary"
+        onclick="window.print()">
+
+        <i class="bi bi-printer-fill"></i>
+
+        Imprimer
+
+    </button>
+
+    <a
+        href="{{ url_for('paiements') }}"
+        class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left-circle"></i>
+
+        Retour
+
+    </a>
+
+</div>
+
+<hr>
+
+<div class="text-center mt-4">
+
+    <p>
+
+        <strong>
+
+            {{ param.nom_ecole if param else "Complexe scolaires La Suisse" }}
+
+        </strong>
+
+    </p>
+
+    <p>
+
+        {{ param.adresse if param else "" }}
+
+    </p>
+
+    <p>
+
+        Téléphone :
+        {{ param.telephone if param else "" }}
+
+        {% if param and param.email %}
+        |
+
+        Email :
+        {{ param.email }}
+        {% endif %}
+
+    </p>
+
+    {% if param and param.site_web %}
+
+    <p>
+
+        Site web :
+
+        {{ param.site_web }}
+
+    </p>
+
+    {% endif %}
+
+    <small class="text-muted">
+
+        Ce reçu est généré automatiquement par
+        <strong>SchoolPay Pro 2.0</strong>
+
+    </small>
+
+    <br>
+
+    <small class="text-muted">
+
+        Imprimé le :
+
+        <span id="date_impression"></span>
+
+    </small>
+
+    <br><br>
+
+    <small class="text-muted">
+
+        © 2026 - Tous droits réservés.
+
+    </small>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById("date_impression").innerHTML =
+new Date().toLocaleString("fr-FR");
+
+</script>
+
+</body>
+
+</html>

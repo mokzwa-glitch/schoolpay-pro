@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Erreur serveur{% endblock %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+
+    <h1 class="display-1 text-danger">
+
+        500
+
+    </h1>
+
+    <h3>
+
+        Erreur interne du serveur
+
+    </h3>
+
+    <p>
+
+        Une erreur est survenue pendant le traitement de votre demande.
+
+    </p>
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        class="btn btn-primary">
+
+        Retour
+
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}
+Détail du paiement
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h4>
+
+<i class="bi bi-eye-fill"></i>
+
+Détail du paiement
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<p>
+
+<strong>Reçu :</strong>
+
+{{ paiement.numero_recu }}
+
+</p>
+
+<p>
+
+<strong>Élève :</strong>
+
+{{ paiement.eleve.nom }}
+{{ paiement.eleve.postnom }}
+{{ paiement.eleve.prenom }}
+
+</p>
+
+<p>
+
+<strong>Classe :</strong>
+
+{{ paiement.eleve.classe.nom if paiement.eleve.classe else "-" }}
+
+</p>
+
+<p>
+
+<strong>Motif :</strong>
+
+{{ paiement.motif.nom }}
+
+</p>
+
+<p>
+
+<strong>Montant :</strong>
+
+{{ paiement.montant }}
+
+{{ paiement.devise }}
+
+</p>
+
+<p>
+
+<strong>Mode :</strong>
+
+{{ paiement.mode_paiement }}
+
+</p>
+
+<p>
+
+<strong>Référence :</strong>
+
+{{ paiement.reference }}
+
+</p>
+
+<p>
+
+<strong>Date :</strong>
+
+{{ paiement.date_paiement.strftime("%d/%m/%Y %H:%M") }}
+
+</p>
+
+<p>
+
+<strong>Observation :</strong>
+
+{{ paiement.observation }}
+
+</p>
+
+<a
+href="{{ url_for('paiements') }}"
+class="btn btn-secondary">
+
+Retour
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

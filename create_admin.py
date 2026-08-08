@@ -4,22 +4,26 @@ from werkzeug.security import generate_password_hash
 
 with app.app_context():
 
+    # Supprimer l'ancien admin s'il existe
     admin = Utilisateur.query.filter_by(username="admin").first()
 
     if admin:
-        admin.password = generate_password_hash("admin123")
-        admin.role = "Administrateur"
+        db.session.delete(admin)
         db.session.commit()
-        print("✅ Mot de passe de l'administrateur réinitialisé.")
+        print("Ancien administrateur supprimé.")
 
-    else:
-        admin = Utilisateur(
-            username="admin",
-            password=generate_password_hash("admin123"),
-            role="Administrateur"
-        )
+    # Créer un nouvel administrateur
+    admin = Utilisateur(
+        username="admin",
+        password=generate_password_hash("admin123"),
+        role="Administrateur"
+    )
 
-        db.session.add(admin)
-        db.session.commit()
+    db.session.add(admin)
+    db.session.commit()
 
-        print("✅ Administrateur créé avec succès.")
+    print("===================================")
+    print("Administrateur créé avec succès !")
+    print("Utilisateur : admin")
+    print("Mot de passe : admin123")
+    print("===================================")

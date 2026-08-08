@@ -1,281 +1,407 @@
 {% extends "base.html" %}
 
-{% block title %}Gestion des utilisateurs{% endblock %}
+{% block title %}
+
+Gestion des utilisateurs
+
+{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
-            <i class="bi bi-people-fill"></i>
-            Gestion des utilisateurs
-        </h2>
+<div>
 
-    </div>
+<h2>
 
-    <!-- Recherche -->
+<i class="bi bi-people-fill"></i>
 
-    <form method="GET" action="{{ url_for('utilisateurs') }}" class="mb-4">
+Gestion des utilisateurs
 
-        <div class="input-group">
+</h2>
 
-            <input
-                type="text"
-                name="recherche"
-                class="form-control"
-                placeholder="Rechercher un utilisateur..."
-                value="{{ request.args.get('recherche','') }}">
+<p class="text-muted">
 
-            <button class="btn btn-primary">
+Administration des comptes utilisateurs.
 
-                <i class="bi bi-search"></i>
+</p>
 
-                Rechercher
+</div>
 
-            </button>
+<span class="badge bg-primary fs-6">
 
-            <a href="{{ url_for('utilisateurs') }}" class="btn btn-secondary">
+{{ utilisateurs|length }} utilisateur(s)
 
-                <i class="bi bi-arrow-clockwise"></i>
+</span>
 
-                Actualiser
+</div>
 
-            </a>
+<!-- AJOUT UTILISATEUR -->
 
-        </div>
+<div class="card shadow mb-4">
 
-    </form>
+<div class="card-header bg-primary text-white">
 
-    <!-- Formulaire -->
+<i class="bi bi-person-plus-fill"></i>
 
-    <div class="card shadow mb-4">
+Ajouter un utilisateur
 
-        <div class="card-header bg-primary text-white">
+</div>
 
-            <i class="bi bi-person-plus-fill"></i>
+<div class="card-body">
 
-            Ajouter un utilisateur
+<form method="POST">
 
-        </div>
+<div class="row">
 
-        <div class="card-body">
+<div class="col-md-3 mb-3">
 
-            <form method="POST">
+<label>Nom</label>
 
-                <div class="row">
+<input
+type="text"
+name="nom"
+class="form-control"
+required>
 
-                    <div class="col-md-4 mb-2">
+</div>
 
-                        <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            placeholder="Nom d'utilisateur"
-                            required>
+<div class="col-md-3 mb-3">
 
-                    </div>
+<label>Postnom</label>
 
-                    <div class="col-md-3 mb-2">
+<input
+type="text"
+name="postnom"
+class="form-control">
 
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Mot de passe"
-                            required>
+</div>
 
-                    </div>
+<div class="col-md-3 mb-3">
 
-                    <div class="col-md-3 mb-2">
+<label>Prénom</label>
 
-                        <select
-                            name="role"
-                            class="form-select"
-                            required>
+<input
+type="text"
+name="prenom"
+class="form-control">
 
-                            <option value="Administrateur">Administrateur</option>
-                            <option value="Comptable">Comptable</option>
-                            <option value="Secretaire">Secrétaire</option>
-                            <option value="Directeur">Directeur</option>
+</div>
 
-                        </select>
+<div class="col-md-3 mb-3">
 
-                    </div>
+<label>Nom d'utilisateur</label>
 
-                    <div class="col-md-2 mb-2">
+<input
+type="text"
+name="username"
+class="form-control"
+required>
 
-                        <button class="btn btn-success w-100">
+</div>
 
-                            <i class="bi bi-plus-circle"></i>
+<div class="col-md-3 mb-3">
 
-                            Ajouter
+<label>Mot de passe</label>
 
-                        </button>
+<input
+type="password"
+name="password"
+class="form-control"
+required>
 
-                    </div>
+</div>
 
-                </div>
+<div class="col-md-3 mb-3">
 
-            </form>
+<label>Téléphone</label>
 
-        </div>
+<input
+type="text"
+name="telephone"
+class="form-control">
 
-    </div>
+</div>
 
-    <!-- Tableau -->
+<div class="col-md-3 mb-3">
 
-    <div class="card shadow">
+<label>Email</label>
 
-        <div class="card-header bg-success text-white d-flex justify-content-between">
+<input
+type="email"
+name="email"
+class="form-control">
 
-            <span>
+</div>
 
-                <i class="bi bi-table"></i>
+<div class="col-md-3 mb-3">
 
-                Liste des utilisateurs
+<label>Rôle</label>
 
-            </span>
+<select
+name="role_id"
+class="form-select"
+required>
 
-            <span class="badge bg-light text-dark">
+<option value="">
 
-                {{ utilisateurs|length }} utilisateur(s)
+Choisir...
 
-            </span>
+</option>
 
-        </div>
+{% for role in roles %}
 
-        <div class="card-body table-responsive">
+<option value="{{ role.id }}">
 
-            <table class="table table-striped table-hover align-middle">
+{{ role.nom }}
 
-                <thead class="table-dark">
+</option>
 
-                    <tr>
+{% endfor %}
 
-                        <th>N°</th>
-                        <th>Nom d'utilisateur</th>
-                        <th class="text-center">Rôle</th>
-                        <th class="text-center">Actions</th>
+</select>
 
-                    </tr>
+</div>
 
-                </thead>
+<div class="col-md-12">
 
-                <tbody>
+<button
+type="submit"
+class="btn btn-success">
 
-                {% for u in utilisateurs %}
+<i class="bi bi-save"></i>
 
-                    <tr>
+Créer l'utilisateur
 
-                        <td>{{ loop.index }}</td>
+</button>
 
-                        <td>
+</div>
 
-                            <strong>{{ u.username }}</strong>
+</div>
 
-                        </td>
+</form>
 
-                        <td class="text-center">
+</div>
 
-                            {% if u.role=="Administrateur" %}
+</div>
 
-                                <span class="badge bg-danger">
+<!-- RECHERCHE -->
 
-                                    Administrateur
+<div class="card shadow mb-4">
 
-                                </span>
+<div class="card-body">
 
-                            {% elif u.role=="Comptable" %}
+<form method="GET">
 
-                                <span class="badge bg-success">
+<div class="input-group">
 
-                                    Comptable
+<input
+type="text"
+name="recherche"
+class="form-control"
+placeholder="Rechercher..."
 
-                                </span>
+value="{{ request.args.get('recherche','') }}">
 
-                            {% elif u.role=="Directeur" %}
+<button
+class="btn btn-primary">
 
-                                <span class="badge bg-warning text-dark">
+<i class="bi bi-search"></i>
 
-                                    Directeur
+Rechercher
 
-                                </span>
+</button>
 
-                            {% else %}
+<a
+href="{{ url_for('utilisateurs') }}"
+class="btn btn-secondary">
 
-                                <span class="badge bg-primary">
+Actualiser
 
-                                    Secrétaire
+</a>
 
-                                </span>
+</div>
 
-                            {% endif %}
+</form>
 
-                        </td>
+</div>
 
-                        <td class="text-center">
+</div>
 
-                            <a
-                                href="{{ url_for('modifier_utilisateur', id=u.id) }}"
-                                class="btn btn-warning btn-sm"
-                                title="Modifier">
+<div class="card shadow">
 
-                                <i class="bi bi-pencil-square"></i>
+<div class="card-header bg-success text-white">
 
-                            </a>
+Liste des utilisateurs
 
-                            {% if u.username != session.get("user") %}
+</div>
 
-                            <a
-                                href="{{ url_for('supprimer_utilisateur', id=u.id) }}"
-                                class="btn btn-danger btn-sm"
-                                title="Supprimer"
-                                onclick="return confirm('Supprimer l''utilisateur {{ u.username }} ?');">
+<div class="card-body table-responsive">
 
-                                <i class="bi bi-trash"></i>
+<table class="table table-bordered table-hover">
 
-                            </a>
+<thead class="table-dark">
 
-                            {% else %}
+<tr>
 
-                            <button
-                                class="btn btn-secondary btn-sm"
-                                disabled
-                                title="Vous ne pouvez pas supprimer votre propre compte">
+<th>#</th>
 
-                                <i class="bi bi-lock-fill"></i>
+<th>Nom complet</th>
 
-                            </button>
+<th>Utilisateur</th>
 
-                            {% endif %}
+<th>Rôle</th>
 
-                        </td>
+<th>Actions</th>
 
-                    </tr>
+</tr>
 
-                {% else %}
+</thead>
 
-                    <tr>
+<tbody>
 
-                        <td colspan="4" class="text-center text-muted">
+{% for u in utilisateurs %}
 
-                            Aucun utilisateur enregistré.
+<tr>
 
-                        </td>
+<td>
 
-                    </tr>
+{{ loop.index }}
 
-                {% endfor %}
+</td>
 
-                </tbody>
+<td>
 
-            </table>
+{{ u.nom }}
 
-        </div>
+{{ u.postnom }}
 
-    </div>
+{{ u.prenom }}
+
+</td>
+
+<td>
+
+{{ u.username }}
+
+</td>
+
+<td>
+
+{% if u.role %}
+
+    {% if u.role.nom == "Administrateur" %}
+
+        <span class="badge bg-danger">
+
+            Administrateur
+
+        </span>
+
+    {% elif u.role.nom == "Directeur" %}
+
+        <span class="badge bg-primary">
+
+            Directeur
+
+        </span>
+
+    {% elif u.role.nom == "Comptable" %}
+
+        <span class="badge bg-success">
+
+            Comptable
+
+        </span>
+
+    {% elif u.role.nom == "Secrétaire" %}
+
+        <span class="badge bg-secondary">
+
+            Secrétaire
+
+        </span>
+
+    {% else %}
+
+        <span class="badge bg-dark">
+
+            {{ u.role.nom }}
+
+        </span>
+
+    {% endif %}
+
+{% else %}
+
+<span class="badge bg-warning text-dark">
+
+Aucun rôle
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if u.id == session.get("user_id") %}
+
+<span class="badge bg-info">
+
+Connecté
+
+</span>
+
+{% else %}
+
+<a
+href="{{ url_for('modifier_utilisateur', id=u.id) }}"
+class="btn btn-warning btn-sm">
+
+<i class="bi bi-pencil-square"></i>
+
+</a>
+
+<a
+href="{{ url_for('supprimer_utilisateur', id=u.id) }}"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Voulez-vous supprimer cet utilisateur ?');">
+
+<i class="bi bi-trash-fill"></i>
+
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td colspan="5" class="text-center">
+
+Aucun utilisateur enregistré.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
 
 </div>
 

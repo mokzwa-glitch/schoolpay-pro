@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Fiche de l'élève{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+                <i class="bi bi-person-badge-fill"></i>
+                Fiche de l'élève
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 text-center">
+
+                    {% if eleve.photo %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + eleve.photo) }}"
+                        class="img-thumbnail"
+                        width="180">
+
+                    {% else %}
+
+                    <img
+                        src="{{ url_for('static', filename='images/avatar.png') }}"
+                        class="img-thumbnail"
+                        width="180">
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-9">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>Matricule</th>
+                            <td>{{ eleve.matricule }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nom</th>
+                            <td>{{ eleve.nom }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Postnom</th>
+                            <td>{{ eleve.postnom }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Prénom</th>
+                            <td>{{ eleve.prenom }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Sexe</th>
+                            <td>{{ eleve.sexe }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Date de naissance</th>
+                            <td>{{ eleve.date_naissance }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Lieu de naissance</th>
+                            <td>{{ eleve.lieu_naissance }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Adresse</th>
+                            <td>{{ eleve.adresse }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Téléphone</th>
+                            <td>{{ eleve.telephone }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ eleve.email }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nom du parent</th>
+                            <td>{{ eleve.nom_parent }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Téléphone parent</th>
+                            <td>{{ eleve.telephone_parent }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Profession parent</th>
+                            <td>{{ eleve.profession_parent }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Classe</th>
+                            <td>{{ eleve.classe.nom }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Date d'inscription</th>
+                            <td>{{ eleve.date_inscription.strftime('%d/%m/%Y') if eleve.date_inscription else '' }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="text-center">
+
+                <a href="{{ url_for('eleves') }}" class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Retour
+
+                </a>
+
+                <a href="{{ url_for('modifier_eleve', id=eleve.id) }}" class="btn btn-warning">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Modifier
+
+                </a>
+
+                <button class="btn btn-primary" onclick="window.print()">
+
+                    <i class="bi bi-printer"></i>
+
+                    Imprimer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
