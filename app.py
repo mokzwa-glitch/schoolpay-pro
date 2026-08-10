@@ -2515,17 +2515,6 @@ def telecharger_backup(nom):
     )
 
 
-# Configuration de la base de données
-database_url = os.environ.get("DATABASE_URL")
-
-if database_url:
-    database_url = database_url.replace(
-        "mysql://",
-        "mysql+pymysql://",
-        1
-    )
-
-app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
 
 # ==================================================
