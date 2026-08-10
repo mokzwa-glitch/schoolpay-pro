@@ -33,6 +33,7 @@ from flask import (
     send_file
 )
 
+from werkzeug.utils import secure_filename
 from functools import wraps
 from datetime import datetime
 
@@ -566,6 +567,7 @@ def dashboard():
 
 
 # ==================================================
+# ==================================================
 # ELEVES
 # ==================================================
 
@@ -600,8 +602,8 @@ def eleves():
             ).strip()
 
             nom = request.form.get(
-                "nom",
-                ""
+            "nom",
+            ""
             ).strip()
 
             postnom = request.form.get(
@@ -619,10 +621,26 @@ def eleves():
                 ""
             ).strip()
 
-            date_naissance = (
-                request.form.get("date_naissance")
-                or None
-            )
+            # ==========================================
+            # DATE DE NAISSANCE
+            # ==========================================
+
+            date_naissance_str = request.form.get(
+                "date_naissance",
+                ""
+            ).strip()
+
+            date_naissance = None
+
+            if date_naissance_str:
+                date_naissance = datetime.strptime(
+                    date_naissance_str,
+                    "%Y-%m-%d"
+                ).date()
+
+            # ==========================================
+            # AUTRES INFORMATIONS
+            # ==========================================
 
             lieu_naissance = request.form.get(
                 "lieu_naissance",
@@ -663,11 +681,13 @@ def eleves():
                 "classe_id"
             )
 
+
             # ======================================
-            # VÉRIFICATIONS
+            # VERIFICATIONS
             # ======================================
 
             if not nom or not postnom or not prenom:
+
                 flash(
                     "Veuillez remplir le nom, le postnom et le prénom.",
                     "danger"
@@ -678,6 +698,7 @@ def eleves():
                 )
 
             if not classe_id:
+
                 flash(
                     "Veuillez sélectionner une classe.",
                     "danger"
@@ -700,9 +721,60 @@ def eleves():
                     url_for("eleves")
                 )
 
-            # ======================================
-            # CRÉATION
-            # ======================================
+            # ==========================================
+            # PHOTO DE L'ELEVE
+            # ==========================================
+
+            photo_nom = None
+
+            photo = request.files.get("photo")
+
+            if photo and photo.filename:
+
+                nom_original = secure_filename(
+                    photo.filename
+                )
+
+                extension = os.path.splitext(
+                    nom_original
+                )[1].lower()
+
+                extensions_autorisees = [
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                ]
+
+                if extension not in extensions_autorisees:
+
+                    flash(
+                        "Format de photo non autorisé. "
+                        "Utilisez JPG, JPEG, PNG ou WEBP.",
+                        "danger"
+                    )
+
+                    return redirect(
+                        url_for("eleves")
+                    )
+
+                photo_nom = (
+                    matricule_form.replace(" ", "_")
+                    + extension
+                )
+
+                chemin_photo = os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    photo_nom
+                )
+
+                photo.save(
+                    chemin_photo
+                )
+
+            # ==========================================
+            # CREATION DE L'ELEVE
+            # ==========================================
 
             eleve = Eleve(
 
@@ -732,7 +804,9 @@ def eleves():
 
                 profession_parent=profession_parent,
 
-                classe_id=int(classe_id)
+                classe_id=int(classe_id),
+
+                photo=photo_nom
 
             )
 
@@ -773,7 +847,7 @@ def eleves():
     ).strip()
 
     # ==========================================
-    # CLASSE SÉLECTIONNÉE
+    # CLASSE SELECTIONNEE
     # ==========================================
 
     classe_id = request.args.get(
@@ -782,12 +856,10 @@ def eleves():
     )
 
     # ==========================================
-    # REQUÊTE DES ÉLÈVES
+    # REQUETE DES ELEVES
     # ==========================================
 
     query = Eleve.query
-
-    # Recherche texte
 
     if recherche:
 
@@ -802,15 +874,11 @@ def eleves():
             )
         )
 
-    # Filtre par classe
-
     if classe_id:
 
         query = query.filter(
             Eleve.classe_id == classe_id
         )
-
-    # Liste finale
 
     liste_eleves = query.order_by(
         Eleve.nom.asc(),
@@ -826,19 +894,21 @@ def eleves():
     ).all()
 
     # ==========================================
-    # NOMBRE D'ÉLÈVES PAR CLASSE
+    # NOMBRE D'ELEVES PAR CLASSE
     # ==========================================
 
     nombres_par_classe = {}
 
     for classe in classes:
 
-        nombres_par_classe[classe.id] = Eleve.query.filter_by(
-            classe_id=classe.id
-        ).count()
+        nombres_par_classe[classe.id] = (
+            Eleve.query.filter_by(
+                classe_id=classe.id
+            ).count()
+        )
 
     # ==========================================
-    # TOTAL ÉLÈVES
+    # TOTAL ELEVES
     # ==========================================
 
     total_eleves = Eleve.query.count()
@@ -880,40 +950,168 @@ def modifier_eleve(id):
 
     if request.method == "POST":
 
-        eleve.nom = request.form.get("nom", "").strip()
-        eleve.postnom = request.form.get("postnom", "").strip()
-        eleve.prenom = request.form.get("prenom", "").strip()
-        eleve.sexe = request.form.get("sexe", "").strip()
-        eleve.telephone = request.form.get("telephone", "").strip()
-        eleve.email = request.form.get("email", "").strip()
-        eleve.adresse = request.form.get("adresse", "").strip()
-        eleve.nom_parent = request.form.get("nom_parent", "").strip()
-        eleve.telephone_parent = request.form.get("telephone_parent", "").strip()
-        eleve.profession_parent = request.form.get("profession_parent", "").strip()
+        try:
 
-        classe_id = request.form.get("classe_id")
-        if classe_id:
-            eleve.classe_id = int(classe_id)
+            # ==========================================
+            # MODIFICATION DE LA PHOTO
+            # ==========================================
 
-        annee_id = request.form.get("annee_id")
-        eleve.annee_id = int(annee_id) if annee_id else None
+            photo = request.files.get("photo")
 
-        db.session.commit()
+            if photo and photo.filename:
 
-        # ==========================================
-        # ENREGISTRER DANS L'HISTORIQUE
-        # ==========================================
+                nom_original = secure_filename(
+                    photo.filename
+                )
 
-        enregistrer_action(
-            f"Modification de l'élève : {eleve.matricule} - {eleve.nom} {eleve.postnom} {eleve.prenom}"
-        )
+                extension = os.path.splitext(
+                    nom_original
+                )[1].lower()
 
-        flash(
-            "Élève modifié avec succès.",
-            "success"
-        )
+                extensions_autorisees = [
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                ]
 
-        return redirect(url_for("eleves"))
+                if extension not in extensions_autorisees:
+
+                    flash(
+                        "Format de photo non autorisé. "
+                        "Utilisez JPG, JPEG, PNG ou WEBP.",
+                        "danger"
+                    )
+
+                    return redirect(
+                        url_for(
+                            "modifier_eleve",
+                            id=eleve.id
+                        )
+                    )
+
+                photo_nom = (
+                    eleve.matricule.replace(" ", "_")
+                    + extension
+                )
+
+                chemin_photo = os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    photo_nom
+                )
+
+                os.makedirs(
+                    app.config["UPLOAD_FOLDER"],
+                    exist_ok=True
+                )
+
+                photo.save(
+                    chemin_photo
+                )
+
+                eleve.photo = photo_nom
+
+            # ==========================================
+            # AUTRES INFORMATIONS
+            # ==========================================
+
+            eleve.nom = request.form.get(
+                "nom",
+                ""
+            ).strip()
+
+            eleve.postnom = request.form.get(
+                "postnom",
+                ""
+            ).strip()
+
+            eleve.prenom = request.form.get(
+                "prenom",
+                ""
+            ).strip()
+
+            eleve.sexe = request.form.get(
+                "sexe",
+                ""
+            ).strip()
+
+            eleve.telephone = request.form.get(
+                "telephone",
+                ""
+            ).strip()
+
+            eleve.email = request.form.get(
+                "email",
+                ""
+            ).strip()
+
+            eleve.adresse = request.form.get(
+                "adresse",
+                ""
+            ).strip()
+
+            eleve.nom_parent = request.form.get(
+                "nom_parent",
+                ""
+            ).strip()
+
+            eleve.telephone_parent = request.form.get(
+                "telephone_parent",
+                ""
+            ).strip()
+
+            eleve.profession_parent = request.form.get(
+                "profession_parent",
+                ""
+            ).strip()
+
+            classe_id_form = request.form.get(
+                "classe_id"
+            )
+
+            if classe_id_form:
+
+                eleve.classe_id = int(
+                    classe_id_form
+                )
+
+            annee_id = request.form.get(
+                "annee_id"
+            )
+
+            if hasattr(eleve, "annee_id"):
+
+                eleve.annee_id = (
+                    int(annee_id)
+                    if annee_id
+                    else None
+                )
+
+            db.session.commit()
+
+            enregistrer_action(
+                f"Modification de l'élève : "
+                f"{eleve.matricule} - "
+                f"{eleve.nom} {eleve.postnom} {eleve.prenom}"
+            )
+
+            flash(
+                "Élève modifié avec succès.",
+                "success"
+            )
+
+            return redirect(
+                url_for("eleves")
+            )
+
+        except Exception as e:
+
+            db.session.rollback()
+
+            flash(
+                f"Erreur : {e}",
+                "danger"
+            )
 
     classes = Classe.query.order_by(
         Classe.nom.asc()
@@ -931,8 +1129,6 @@ def modifier_eleve(id):
     )
 
 
-
-
 # ==================================================
 # FICHE ELEVE
 # ==================================================
@@ -947,6 +1143,7 @@ def fiche_eleve(id):
         "fiche_eleve.html",
         eleve=eleve
     )
+
 
 # ==================================================
 # SUPPRIMER UN ELEVE
@@ -965,7 +1162,8 @@ def supprimer_eleve(id):
         db.session.commit()
 
         enregistrer_action(
-            f"Suppression de l'élève {eleve.nom} {eleve.postnom}"
+            f"Suppression de l'élève "
+            f"{eleve.nom} {eleve.postnom}"
         )
 
         flash(
@@ -982,11 +1180,13 @@ def supprimer_eleve(id):
             "danger"
         )
 
-    return redirect(url_for("eleves"))
+    return redirect(
+        url_for("eleves")
+    )
 
 
-
-
+# ==================================================
+# REÇU DE PAIEMENT
 # ==================================================
 # REÇU DE PAIEMENT
 # ==================================================
