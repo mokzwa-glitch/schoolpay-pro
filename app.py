@@ -52,6 +52,8 @@ from reportlab.platypus import (
     Paragraph
 )
 
+
+from sqlalchemy import text
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -2505,6 +2507,10 @@ def telecharger_backup(nom):
         download_name=nom
     )
 
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+
+
 # ==================================================
 # A PROPOS
 # ==================================================
@@ -2543,6 +2549,122 @@ def rapport_paiements():
         paiements=paiements,
         montant_total=montant_total
     )
+
+# ==================================================
+# EXPORT EXCEL DES PAIEMENTS
+# ==================================================
+
+@app.route("/export_excel")
+@login_required
+def export_excel():
+
+    try:
+        paiements = Paiement.query.order_by(
+            Paiement.date_paiement.desc()
+        ).all()
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Paiements"
+
+        # En-têtes
+        ws.append([
+            "N° Reçu",
+            "Élève",
+            "Matricule",
+            "Motif",
+            "Montant",
+            "Devise",
+            "Mode de paiement",
+            "Référence",
+            "Date"
+        ])
+
+        # Données
+        for paiement in paiements:
+
+            eleve = paiement.eleve
+            motif = paiement.motif
+
+            nom_eleve = ""
+
+            if eleve:
+                nom_eleve = (
+                    f"{eleve.nom} "
+                    f"{eleve.postnom} "
+                    f"{eleve.prenom}"
+                ).strip()
+
+            ws.append([
+                paiement.numero_recu,
+                nom_eleve,
+                eleve.matricule if eleve else "",
+                motif.nom if motif else "",
+                paiement.montant,
+                paiement.devise,
+                paiement.mode_paiement,
+                paiement.reference,
+                paiement.date_paiement
+            ])
+
+        # Ajustement automatique des colonnes
+        for colonne in ws.columns:
+
+            longueur = 0
+            lettre = colonne[0].column_letter
+
+            for cellule in colonne:
+
+                if cellule.value is not None:
+
+                    longueur = max(
+                        longueur,
+                        len(str(cellule.value))
+                    )
+
+            ws.column_dimensions[lettre].width = (
+                min(longueur + 2, 40)
+            )
+
+        # Dossier temporaire
+        fichier = os.path.join(
+            app.config["BACKUP_FOLDER"],
+            "rapport_paiements.xlsx"
+        )
+
+        wb.save(fichier)
+
+        enregistrer_action(
+            "Export Excel des paiements"
+        )
+
+        return send_file(
+            fichier,
+            as_attachment=True,
+            download_name="rapport_paiements.xlsx",
+            mimetype=(
+                "application/vnd.openxmlformats-officedocument."
+                "spreadsheetml.sheet"
+            )
+        )
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        print(
+            "ERREUR EXPORT EXCEL :",
+            e
+        )
+
+        flash(
+            f"Erreur lors de l'export Excel : {e}",
+            "danger"
+        )
+
+        return redirect(
+            url_for("rapport_paiements")
+        )
 
 
 # ==================================================
@@ -2755,7 +2877,7 @@ def generer_qr_code(eleve, carte):
         )
 
         os.makedirs(
-            QR_FOLDER,
+            dossier_qr,
             exist_ok=True
         )
 
@@ -2844,19 +2966,26 @@ def generer_qr_code(eleve, carte):
 @app.errorhandler(404)
 def page_introuvable(error):
 
-    return render_template(
-        "404.html"
-    ),404
+    return """
+    <h1>404 - Page introuvable</h1>
+    <p>La page demandée n'existe pas.</p>
+    <a href="/dashboard">Retour au tableau de bord</a>
+    """, 404
 
 
 @app.errorhandler(500)
 def erreur_serveur(error):
 
-    db.session.rollback()
+    try:
+        db.session.rollback()
+    except Exception:
+        pass
 
-    return render_template(
-        "500.html"
-    ),500
+    return """
+    <h1>500 - Erreur serveur</h1>
+    <p>Une erreur interne est survenue.</p>
+    <a href="/dashboard">Retour au tableau de bord</a>
+    """, 500
 
 
 # ==================================================

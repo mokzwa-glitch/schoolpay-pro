@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="alert alert-danger">
+        <h1>Erreur 500</h1>
+        <p>Une erreur interne s'est produite sur le serveur.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            Retour au tableau de bord
+        </a>
+    </div>
+</div>
+{% endblock %}
