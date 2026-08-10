@@ -70,6 +70,11 @@ from config import Config
 
 app = Flask(__name__)
 
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "schoolpay-secret-2026"
+)
+
 app.config.from_object(Config)
 
 app.secret_key = app.config["SECRET_KEY"]
