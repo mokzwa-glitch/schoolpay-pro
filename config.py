@@ -6,9 +6,13 @@ class Config:
     database_url = os.getenv("DATABASE_URL")
 
     if database_url:
-        # Railway peut fournir mysql:// ou mysql+mysqldb://.
+
+        # Railway peut fournir mysql://
+        # ou mysql+mysqldb://.
         # Notre application utilise PyMySQL.
+
         if database_url.startswith("mysql://"):
+
             database_url = database_url.replace(
                 "mysql://",
                 "mysql+pymysql://",
@@ -16,6 +20,7 @@ class Config:
             )
 
         elif database_url.startswith("mysql+mysqldb://"):
+
             database_url = database_url.replace(
                 "mysql+mysqldb://",
                 "mysql+pymysql://",
@@ -25,8 +30,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = database_url or (
         "mysql+pymysql://root:@localhost/schoolpay"
     )
-
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
