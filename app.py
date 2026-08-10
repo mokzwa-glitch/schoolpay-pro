@@ -67,6 +67,7 @@ from config import Config
 # ==================================================
 # APPLICATION
 # ==================================================
+
 app = Flask(__name__)
 
 # Charger la configuration
