@@ -81,9 +81,9 @@
 
         .student-card {
 
-            width: 360px;
+            width: 430px;
 
-            height: 225px;
+            height: 270px;
 
             background: #ffffff;
 
@@ -107,7 +107,7 @@
 
         .card-header {
 
-            height: 78px;
+            height: 82px;
 
             background:
                 linear-gradient(
@@ -130,9 +130,9 @@
 
             align-items: center;
 
-            gap: 10px;
+            gap: 12px;
 
-            height: 50px;
+            height: 58px;
         }
 
 
@@ -198,7 +198,7 @@
 
         .school-name {
 
-            font-size: 13px;
+            font-size: 15px;
 
             font-weight: 900;
 
@@ -270,11 +270,11 @@
 
             right: 0;
 
-            top: 78px;
+            top: 82px;
 
-            bottom: 20px;
+            bottom: 22px;
 
-            padding: 10px 12px;
+            padding: 12px 14px;
 
             display: flex;
 
@@ -288,9 +288,9 @@
 
         .photo-box {
 
-            width: 72px;
+            width: 78px;
 
-            height: 82px;
+            height: 92px;
 
             flex-shrink: 0;
 
@@ -459,7 +459,7 @@
 
         .qr-area {
 
-            width: 70px;
+            width: 76px;
 
             flex-shrink: 0;
 
@@ -477,9 +477,9 @@
 
         .qr-code {
 
-            width: 62px;
+            width: 68px;
 
-            height: 62px;
+            height: 68px;
 
             object-fit: contain;
 
@@ -497,7 +497,7 @@
 
         .qr-label {
 
-            width: 70px;
+            width: 76px;
 
             margin-top: 3px;
 
@@ -697,6 +697,132 @@
                 break-after: avoid-page !important;
             }
 
+            /* Dimensions physiques identiques à la carte imprimée.
+               On évite les tailles en pixels qui provoquent des
+               débordements ou des éléments coupés à l'impression. */
+
+            .card-header {
+                height: 16.4mm !important;
+                padding: 1.6mm 2.5mm !important;
+            }
+
+            .header-content {
+                height: 11.6mm !important;
+                gap: 2.5mm !important;
+            }
+
+            .school-logo,
+            .school-logo-default {
+                width: 9.5mm !important;
+                height: 9.5mm !important;
+            }
+
+            .school-name {
+                font-size: 3.1mm !important;
+                line-height: 1.05 !important;
+                max-width: 55mm !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .school-subtitle {
+                font-size: 1.8mm !important;
+                margin-top: .7mm !important;
+            }
+
+            .card-title {
+                bottom: 0 !important;
+                padding: 1.2mm 4mm !important;
+                font-size: 1.9mm !important;
+                border-radius: 3mm 3mm 0 0 !important;
+            }
+
+            .card-content {
+                top: 16.4mm !important;
+                bottom: 4.8mm !important;
+                padding: 2.2mm 2.8mm !important;
+                gap: 2.5mm !important;
+            }
+
+            .photo-box {
+                width: 15.5mm !important;
+                height: 18.5mm !important;
+                padding: .7mm !important;
+                border-width: .5mm !important;
+                border-radius: 1.5mm !important;
+            }
+
+            .student-photo,
+            .photo-placeholder {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .student-info {
+                padding-top: .2mm !important;
+                min-width: 0 !important;
+            }
+
+            .student-name {
+                font-size: 2.8mm !important;
+                line-height: 1.05 !important;
+                max-height: 6.5mm !important;
+            }
+
+            .student-class {
+                margin-top: 1.1mm !important;
+                padding: .9mm 1.8mm !important;
+                font-size: 1.8mm !important;
+            }
+
+            .matricule {
+                margin-top: 1.4mm !important;
+                font-size: 1.9mm !important;
+            }
+
+            .matricule strong {
+                font-size: 2.1mm !important;
+            }
+
+            .details {
+                margin-top: 1.1mm !important;
+                gap: .7mm 2mm !important;
+            }
+
+            .detail {
+                font-size: 1.75mm !important;
+                line-height: 1.15 !important;
+            }
+
+            .qr-area {
+                width: 16mm !important;
+                padding-top: .4mm !important;
+            }
+
+            .qr-code {
+                width: 15mm !important;
+                height: 15mm !important;
+                padding: .5mm !important;
+                border-width: .25mm !important;
+            }
+
+            .qr-label {
+                width: 16mm !important;
+                margin-top: .6mm !important;
+                font-size: 1.45mm !important;
+                line-height: 1.05 !important;
+            }
+
+            .card-footer {
+                height: 4.8mm !important;
+                padding: 0 1.5mm !important;
+                font-size: 1.65mm !important;
+                line-height: 1 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
 
             /* Couleurs à l'impression */
 
@@ -821,27 +947,24 @@
                         </div>
                     {% endif %}
 
-                        <div class="school-name">
-                            {{ param.nom_ecole if param and param.nom_ecole else "SchoolPay Pro" }}
-                        </div>
+                        <div class="school-info">
+                            <div class="school-name">
+                                {{ param.nom_ecole if param and param.nom_ecole else "SchoolPay Pro" }}
+                            </div>
 
-                        <div class="school-subtitle">
-                            Établissement d'enseignement
+                            <div class="school-subtitle">
+                                Établissement d'enseignement
+                            </div>
                         </div>
 
                     </div>
 
-                </div>
-
 
                 <div class="card-title">
-
                     CARTE D'ÉLÈVE
-
                 </div>
 
             </div>
-
 
             <!-- CORPS -->
 
@@ -1074,11 +1197,9 @@
             </div>
 
 
-            <!-- FOOTER -->
-
             <div class="card-footer">
 
-                Complexe Scolaire La Suisse
+                {{ param.nom_ecole if param and param.nom_ecole else "SchoolPay Pro" }}
 
                 &nbsp; • &nbsp;
 
@@ -1086,7 +1207,11 @@
 
                 &nbsp; • &nbsp;
 
-                2026-2027
+                {% if eleve.annee %}
+                    {{ eleve.annee.libelle if eleve.annee.libelle else eleve.annee.nom }}
+                {% else %}
+                    2026-2027
+                {% endif %}
 
             </div>
 
