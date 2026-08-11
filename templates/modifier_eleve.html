@@ -231,11 +231,12 @@ value="{{ eleve.date_naissance }}">
 
     <label>Nom du parent / tuteur</label>
 
-    <input
-        type="text"
-        name="nom_parent"
-        class="form-control"
-        value="{{ eleve.nom_parent or '' }}">
+<input
+    type="text"
+    name="nom_parent"
+    value="{{ eleve.nom_parent or '' }}"
+    class="form-control"
+    placeholder="Nom complet du parent">
 
 </div>
 

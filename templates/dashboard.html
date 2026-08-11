@@ -1,1009 +1,906 @@
 {% extends "base.html" %}
-
-{% block title %}Tableau de bord{% endblock %}
-
+{% block title %}Tableau de bord | SchoolPay Pro{% endblock %}
 {% block content %}
 
-<div class="container-fluid">
-
-    <!-- En-tête -->
-
-    <div class="row mb-4">
-
-        <div class="col-md-8">
-
-            <h2 class="fw-bold text-primary">
-
-                <i class="bi bi-speedometer2"></i>
-
-                Tableau de bord
-
-            </h2>
-
-            <p class="text-muted">
-
-                Bienvenue
-
-                <strong>
-
-                    {{ utilisateur }}
-
-                </strong>
-
-                |
-
-                Connecté en tant que
-
-                <span class="badge bg-success">
-
-                    {{ role }}
-
-                </span>
-
-            </p>
-
-        </div>
-
-        <div class="col-md-4 text-end">
-
-            <a href="{{ url_for('paiements') }}"
-               class="btn btn-success">
-
-                <i class="bi bi-cash-stack"></i>
-
-                Nouveau paiement
-
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <!-- Statistiques -->
-
-    <div class="row">
-
-        <!-- Élèves -->
-
-        <div class="col-lg-3 col-md-6 mb-4">
-
-            <div class="card border-0 shadow-lg">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-
-                                Élèves
-
-                            </small>
-
-                            <h2 class="fw-bold text-primary">
-
-                                {{ total_eleves }}
-
-                            </h2>
-
-                        </div>
-
-                        <i class="bi bi-people-fill
-                                  text-primary
-                                  fs-1">
-
-                        </i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Classes -->
-
-        <div class="col-lg-3 col-md-6 mb-4">
-
-            <div class="card border-0 shadow-lg">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-
-                                Classes
-
-                            </small>
-
-                            <h2 class="fw-bold text-success">
-
-                                {{ total_classes }}
-
-                            </h2>
-
-                        </div>
-
-                        <i class="bi bi-building
-                                  text-success
-                                  fs-1">
-
-                        </i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Paiements -->
-
-        <div class="col-lg-3 col-md-6 mb-4">
-
-            <div class="card border-0 shadow-lg">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-
-                                Paiements
-
-                            </small>
-
-                            <h2 class="fw-bold text-warning">
-
-                                {{ total_paiements }}
-
-                            </h2>
-
-                        </div>
-
-                        <i class="bi bi-cash-stack
-                                  text-warning
-                                  fs-1">
-
-                        </i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Total encaissé -->
-
-        <div class="col-lg-3 col-md-6 mb-4">
-
-            <div class="card border-0 shadow-lg">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-
-                                Total encaissé
-
-                            </small>
-
-                            <h2 class="fw-bold text-danger">
-
-                                {{ montant_total }} $
-
-                            </h2>
-
-                        </div>
-
-                        <i class="bi bi-currency-dollar
-                                  text-danger
-                                  fs-1">
-
-                        </i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ====================================== -->
-<!-- STATISTIQUES COMPLEMENTAIRES -->
-<!-- ====================================== -->
-
-<div class="row">
-
-    <!-- Montant du jour -->
-
-    <div class="col-lg-4 mb-4">
-
-        <div class="card border-0 shadow-lg bg-success text-white">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <small>
-
-                            Encaissé aujourd'hui
-
-                        </small>
-
-                        <h2 class="fw-bold">
-
-                            {{ montant_jour|default(0) }} $
-
-                        </h2>
-
-                    </div>
-
-                    <i class="bi bi-calendar-check fs-1"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Montant du mois -->
-
-    <div class="col-lg-4 mb-4">
-
-        <div class="card border-0 shadow-lg bg-primary text-white">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <small>
-
-                            Encaissé ce mois
-
-                        </small>
-
-                        <h2 class="fw-bold">
-
-                            {{ montant_total }} $
-
-                        </h2>
-
-                    </div>
-
-                    <i class="bi bi-graph-up-arrow fs-1"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Elèves actifs -->
-
-    <div class="col-lg-4 mb-4">
-
-        <div class="card border-0 shadow-lg bg-warning">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <small>
-
-                            Élèves actifs
-
-                        </small>
-
-                        <h2 class="fw-bold">
-
-                            {{ total_eleves }}
-
-                        </h2>
-
-                    </div>
-
-                    <i class="bi bi-person-check-fill fs-1"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+<style>
+:root{
+    --sp-primary:#2563eb;
+    --sp-success:#16a34a;
+    --sp-warning:#f59e0b;
+    --sp-danger:#dc2626;
+    --sp-dark:#0f172a;
+    --sp-muted:#64748b;
+    --sp-bg:#f8fafc;
+    --sp-border:#e2e8f0;
+}
+
+/* =========================
+   MODE CLAIR
+   ========================= */
+.dashboard-page{
+    background:var(--sp-bg);
+    min-height:calc(100vh - 70px);
+    padding:28px 0 50px;
+}
+
+.welcome-card{
+    position:relative;
+    overflow:hidden;
+    border:0;
+    border-radius:22px;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#38bdf8);
+    color:#fff;
+    box-shadow:0 18px 45px rgba(37,99,235,.22);
+}
+
+.welcome-card:after{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    right:-80px;
+    top:-110px;
+    background:rgba(255,255,255,.1);
+}
+
+.welcome-content{
+    position:relative;
+    z-index:2;
+}
+
+.welcome-icon{
+    width:58px;
+    height:58px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:17px;
+    background:rgba(255,255,255,.16);
+    font-size:27px;
+}
+
+.stat-card,
+.section-card{
+    border:1px solid var(--sp-border);
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 8px 25px rgba(15,23,42,.06);
+    overflow:hidden;
+}
+
+.stat-card{
+    transition:transform .25s,box-shadow .25s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 16px 35px rgba(15,23,42,.11);
+}
+
+.stat-icon{
+    width:54px;
+    height:54px;
+    border-radius:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+}
+
+.icon-blue{background:#eff6ff;color:var(--sp-primary)}
+.icon-green{background:#f0fdf4;color:var(--sp-success)}
+.icon-orange{background:#fffbeb;color:var(--sp-warning)}
+.icon-red{background:#fef2f2;color:var(--sp-danger)}
+
+.stat-label{
+    color:var(--sp-muted);
+    font-size:.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.stat-number{
+    color:var(--sp-dark);
+    font-size:1.8rem;
+    font-weight:800;
+    line-height:1.1;
+}
+
+.section-header{
+    padding:18px 20px;
+    border-bottom:1px solid var(--sp-border);
+    background:#fff;
+}
+
+.section-title{
+    color:var(--sp-dark);
+    font-weight:750;
+    margin:0;
+    font-size:1rem;
+}
+
+.section-subtitle{
+    color:var(--sp-muted);
+    font-size:.8rem;
+    margin:3px 0 0;
+}
+
+.quick-action{
+    min-height:108px;
+    border:1px solid var(--sp-border);
+    border-radius:16px;
+    background:#fff;
+    color:var(--sp-dark);
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:all .22s;
+}
+
+.quick-action:hover{
+    color:var(--sp-primary);
+    border-color:#bfdbfe;
+    background:#eff6ff;
+    transform:translateY(-3px);
+}
+
+.quick-action i{
+    font-size:25px;
+}
+
+.quick-action span{
+    font-size:.86rem;
+    font-weight:700;
+}
+
+.mini-card{
+    border-radius:16px;
+    padding:18px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    min-height:120px;
+}
+
+.mini-card .mini-icon{
+    position:absolute;
+    right:18px;
+    bottom:14px;
+    opacity:.18;
+    font-size:55px;
+}
+
+.mini-success{background:linear-gradient(135deg,#15803d,#22c55e)}
+.mini-primary{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.mini-warning{background:linear-gradient(135deg,#d97706,#f59e0b)}
+
+.table-modern thead th{
+    color:#64748b;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    border-bottom:1px solid var(--sp-border);
+    background:#f8fafc;
+    padding:13px 14px;
+}
+
+.table-modern tbody td{
+    padding:14px;
+    border-color:#f1f5f9;
+    vertical-align:middle;
+}
+
+.table-modern tbody tr:hover{
+    background:#f8fafc;
+}
+
+.receipt-badge{
+    background:#eff6ff;
+    color:#1d4ed8;
+    border-radius:8px;
+    padding:6px 9px;
+    font-weight:700;
+    font-size:.75rem;
+}
+
+.activity-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:14px 0;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.activity-item:last-child{
+    border-bottom:0;
+}
+
+.activity-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.alert-modern{
+    border:0;
+    border-radius:13px;
+    margin-bottom:10px;
+    padding:13px 15px;
+}
+
+/* =========================
+   MODE SOMBRE — DASHBOARD
+   ========================= */
+
+.dark-mode .dashboard-page{
+    background:#0b1120 !important;
+    color:#e5e7eb !important;
+}
+
+.dark-mode .stat-card,
+.dark-mode .section-card{
+    background:#111827 !important;
+    border-color:#263244 !important;
+    color:#e5e7eb !important;
+    box-shadow:0 10px 30px rgba(0,0,0,.28) !important;
+}
+
+.dark-mode .section-header{
+    background:#111827 !important;
+    border-color:#263244 !important;
+}
+
+.dark-mode .stat-label,
+.dark-mode .section-subtitle,
+.dark-mode .text-muted{
+    color:#94a3b8 !important;
+}
+
+.dark-mode .stat-number,
+.dark-mode .section-title{
+    color:#f8fafc !important;
+}
+
+.dark-mode .quick-action{
+    background:#172033 !important;
+    color:#f8fafc !important;
+    border-color:#334155 !important;
+}
+
+.dark-mode .quick-action:hover{
+    background:#1e293b !important;
+    color:#93c5fd !important;
+    border-color:#3b82f6 !important;
+}
+
+.dark-mode .table-modern{
+    color:#e5e7eb !important;
+    --bs-table-bg:#111827;
+    --bs-table-color:#e5e7eb;
+    --bs-table-border-color:#334155;
+}
+
+.dark-mode .table-modern thead th{
+    background:#0f172a !important;
+    color:#cbd5e1 !important;
+    border-color:#334155 !important;
+}
+
+.dark-mode .table-modern tbody td{
+    background:#111827 !important;
+    color:#e5e7eb !important;
+    border-color:#263244 !important;
+}
+
+.dark-mode .table-modern tbody tr:hover td{
+    background:#1e293b !important;
+}
+
+.dark-mode .receipt-badge{
+    background:#1e3a8a !important;
+    color:#bfdbfe !important;
+}
+
+.dark-mode .activity-item{
+    border-color:#263244 !important;
+}
+
+.dark-mode .activity-item .fw-semibold{
+    color:#f8fafc !important;
+}
+
+.dark-mode .icon-blue{
+    background:#172554 !important;
+    color:#60a5fa !important;
+}
+
+.dark-mode .icon-green{
+    background:#052e16 !important;
+    color:#4ade80 !important;
+}
+
+.dark-mode .icon-orange{
+    background:#451a03 !important;
+    color:#fbbf24 !important;
+}
+
+.dark-mode .icon-red{
+    background:#450a0a !important;
+    color:#f87171 !important;
+}
+
+/* Les mini-cartes restent volontairement colorées */
+.dark-mode .mini-success{
+    background:linear-gradient(135deg,#166534,#16a34a) !important;
+}
+
+.dark-mode .mini-primary{
+    background:linear-gradient(135deg,#1e40af,#2563eb) !important;
+}
+
+.dark-mode .mini-warning{
+    background:linear-gradient(135deg,#b45309,#d97706) !important;
+}
+
+/* Le graphique conserve son fond transparent */
+.dark-mode #graphiqueDashboard{
+    background:transparent !important;
+}
+
+/* Alertes : garder leurs couleurs mais améliorer la lisibilité */
+.dark-mode .alert-modern{
+    border:1px solid rgba(255,255,255,.08) !important;
+}
+
+.dark-mode .alert-success{
+    background:#052e16 !important;
+    color:#bbf7d0 !important;
+}
+
+.dark-mode .alert-info{
+    background:#082f49 !important;
+    color:#bae6fd !important;
+}
+
+.dark-mode .alert-warning{
+    background:#451a03 !important;
+    color:#fde68a !important;
+}
+
+.dark-mode .border-bottom{
+    border-color:#334155 !important;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media(max-width:767px){
+    .dashboard-page{
+        padding-top:16px;
+    }
+
+    .welcome-card{
+        border-radius:17px;
+    }
+
+    .stat-number{
+        font-size:1.45rem;
+    }
+
+    .quick-action{
+        min-height:95px;
+    }
+}
+</style>
+
+<div class="dashboard-page">
+<div class="container-fluid px-3 px-lg-4">
+
+<div class="welcome-card mb-4">
+<div class="welcome-content p-4 p-lg-5">
+<div class="row align-items-center">
+
+<div class="col-lg-8">
+<div class="d-flex align-items-center gap-3">
+<div class="welcome-icon">
+<i class="bi bi-speedometer2"></i>
+</div>
+
+<div>
+<div class="small opacity-75 mb-1">SchoolPay Pro</div>
+
+<h1 class="h3 fw-bold mb-1">
+Tableau de bord
+</h1>
+
+<div class="opacity-75">
+Bienvenue <strong>{{ utilisateur }}</strong>
+· Connecté en tant que
+<span class="badge rounded-pill bg-light text-primary ms-1">
+{{ role }}
+</span>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+<a href="{{ url_for('paiements') }}"
+   class="btn btn-light text-primary fw-bold rounded-pill px-4 py-2 shadow-sm">
+<i class="bi bi-plus-circle me-1"></i>
+Nouveau paiement
+</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="row g-3 mb-4">
+
+{% set stats = [
+("Élèves", total_eleves, "Inscrits", "bi-people-fill", "icon-blue"),
+("Classes", total_classes, "Organisées", "bi-building", "icon-green"),
+("Paiements", total_paiements, "Enregistrés", "bi-cash-stack", "icon-orange"),
+("Total encaissé", montant_total ~ " $", "Montant cumulé", "bi-wallet2", "icon-red")
+] %}
+
+{% for label,value,sub,icon,color in stats %}
+
+<div class="col-6 col-xl-3">
+<div class="stat-card h-100">
+<div class="p-3 p-lg-4">
+
+<div class="d-flex justify-content-between align-items-start">
+
+<div>
+<div class="stat-label mb-2">{{ label }}</div>
+<div class="stat-number">{{ value }}</div>
+<small class="text-muted">{{ sub }}</small>
+</div>
+
+<div class="stat-icon {{ color }}">
+<i class="bi {{ icon }}"></i>
+</div>
 
 </div>
 
-<!-- ====================================== -->
-<!-- ACCES RAPIDE -->
-<!-- ====================================== -->
-
-<div class="card border-0 shadow-lg mb-4">
-
-    <div class="card-header bg-dark text-white">
-
-        <i class="bi bi-lightning-fill"></i>
-
-        Accès rapide
-
-    </div>
-
-    <div class="card-body text-center">
-
-        <a href="{{ url_for('eleves') }}"
-           class="btn btn-primary m-2">
-
-            <i class="bi bi-people-fill"></i>
-
-            Élèves
-
-        </a>
-
-        <a href="{{ url_for('classes') }}"
-           class="btn btn-success m-2">
-
-            <i class="bi bi-building"></i>
-
-            Classes
-
-        </a>
-
-        <a href="{{ url_for('paiements') }}"
-           class="btn btn-warning m-2">
-
-            <i class="bi bi-cash-stack"></i>
-
-            Paiements
-
-        </a>
-
-        {% if session.get("role")=="Administrateur" %}
-
-        <a href="{{ url_for('utilisateurs') }}"
-           class="btn btn-danger m-2">
-
-            <i class="bi bi-person-fill-gear"></i>
-
-            Utilisateurs
-
-        </a>
-
-        {% endif %}
-
-        <a href="{{ url_for('rapport_paiements') }}"
-           class="btn btn-info m-2">
-
-            <i class="bi bi-file-earmark-pdf-fill"></i>
-
-            Rapport PDF
-
-        </a>
-
-        <a href="{{ url_for('export_excel') }}"
-           class="btn btn-secondary m-2">
-
-            <i class="bi bi-file-earmark-excel-fill"></i>
-
-            Export Excel
-
-        </a>
-
-    </div>
-
 </div>
-<!-- ====================================== -->
-<!-- GRAPHIQUES ET RÉSUMÉ -->
-<!-- ====================================== -->
+</div>
+</div>
 
-<div class="row">
-
-    <!-- Graphique -->
-
-    <div class="col-lg-8 mb-4">
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-primary text-white">
-
-                <i class="bi bi-bar-chart-fill"></i>
-
-                Statistiques générales
-
-            </div>
-
-            <div class="card-body">
-
-                <canvas id="graphiqueDashboard"
-                        height="120">
-
-                </canvas>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Résumé -->
-
-    <div class="col-lg-4 mb-4">
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-success text-white">
-
-                <i class="bi bi-clipboard-data-fill"></i>
-
-                Résumé financier
-
-            </div>
-
-            <div class="card-body">
-
-                <table class="table table-borderless">
-
-                    <tr>
-
-                        <td>
-
-                            👨‍🎓 Élèves
-
-                        </td>
-
-                        <th class="text-end">
-
-                            {{ total_eleves }}
-
-                        </th>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            🏫 Classes
-
-                        </td>
-
-                        <th class="text-end">
-
-                            {{ total_classes }}
-
-                        </th>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            💳 Paiements
-
-                        </td>
-
-                        <th class="text-end">
-
-                            {{ total_paiements }}
-
-                        </th>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            💵 Aujourd'hui
-
-                        </td>
-
-                        <th class="text-end text-success">
-
-                            {{ montant_jour|default(0) }} $
-
-                        </th>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            💰 Total encaissé
-
-                        </td>
-
-                        <th class="text-end text-primary">
-
-                            {{ montant_total }} $
-
-                        </th>
-
-                    </tr>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
+{% endfor %}
 
 </div>
 
-<!-- ====================================== -->
-<!-- INDICATEURS -->
-<!-- ====================================== -->
+<div class="row g-3 mb-4">
 
-<div class="row">
+<div class="col-md-4">
+<div class="mini-card mini-success">
+<div class="small opacity-75">Encaissé aujourd'hui</div>
+<div class="fs-3 fw-bold mt-2">
+{{ montant_jour|default(0) }} $
+</div>
+<div class="small opacity-75">Recettes du jour</div>
+<i class="bi bi-calendar-check mini-icon"></i>
+</div>
+</div>
 
-    <div class="col-md-4 mb-3">
+<div class="col-md-4">
+<div class="mini-card mini-primary">
+<div class="small opacity-75">Encaissé ce mois</div>
+<div class="fs-3 fw-bold mt-2">
+{{ montant_total }} $
+</div>
+<div class="small opacity-75">Suivi financier</div>
+<i class="bi bi-graph-up-arrow mini-icon"></i>
+</div>
+</div>
 
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body text-center">
-
-                <i class="bi bi-arrow-up-circle-fill
-                          text-success
-                          fs-1">
-
-                </i>
-
-                <h5 class="mt-3">
-
-                    Bon rendement
-
-                </h5>
-
-                <small class="text-muted">
-
-                    Les paiements évoluent normalement.
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body text-center">
-
-                <i class="bi bi-bank2
-                          text-primary
-                          fs-1">
-
-                </i>
-
-                <h5 class="mt-3">
-
-                    Gestion financière
-
-                </h5>
-
-                <small class="text-muted">
-
-                    Les statistiques sont mises à jour automatiquement.
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body text-center">
-
-                <i class="bi bi-shield-check
-                          text-warning
-                          fs-1">
-
-                </i>
-
-                <h5 class="mt-3">
-
-                    Données sécurisées
-
-                </h5>
-
-                <small class="text-muted">
-
-                    Base de données protégée.
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
+<div class="col-md-4">
+<div class="mini-card mini-warning">
+<div class="small opacity-75">Élèves actifs</div>
+<div class="fs-3 fw-bold mt-2">
+{{ total_eleves }}
+</div>
+<div class="small opacity-75">Élèves enregistrés</div>
+<i class="bi bi-person-check-fill mini-icon"></i>
+</div>
+</div>
 
 </div>
 
-<!-- ====================================== -->
-<!-- DERNIERS PAIEMENTS ET DERNIERS ÉLÈVES -->
-<!-- ====================================== -->
-
-<div class="row">
-
-    <!-- Derniers paiements -->
-
-    <div class="col-lg-7 mb-4">
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-info text-white">
-
-                <i class="bi bi-cash-stack"></i>
-
-                Derniers paiements enregistrés
-
-            </div>
-
-            <div class="card-body">
-
-                {% if derniers_paiements %}
-
-                <table class="table table-hover align-middle">
-
-                    <thead class="table-light">
-
-                        <tr>
-
-                            <th>Reçu</th>
-
-                            <th>Élève</th>
-
-                            <th>Montant</th>
-
-                            <th>Date</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    {% for p in derniers_paiements %}
-
-                        <tr>
-
-                            <td>
-
-                                <span class="badge bg-primary">
-
-                                    {{ p.numero_recu }}
-
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                {{ p.eleve.nom }}
-
-                                {{ p.eleve.postnom }}
-
-                            </td>
-
-                            <td>
-
-                                <strong class="text-success">
-
-                                    {{ p.montant }} $
-
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                {{ p.date_paiement.strftime("%d/%m/%Y") }}
-
-                            </td>
-
-                        </tr>
-
-                    {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-                {% else %}
-
-                <div class="text-center p-4 text-muted">
-
-                    <i class="bi bi-cash-stack fs-1"></i>
-
-                    <br><br>
-
-                    Aucun paiement enregistré.
-
-                </div>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Activité -->
-
-    <div class="col-lg-5 mb-4">
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-success text-white">
-
-                <i class="bi bi-activity"></i>
-
-                Activité récente
-
-            </div>
-
-            <div class="card-body">
-
-                <ul class="list-group list-group-flush">
-
-                    <li class="list-group-item">
-
-                        👨‍🎓
-
-                        Élèves enregistrés :
-
-                        <strong>
-
-                            {{ total_eleves }}
-
-                        </strong>
-
-                    </li>
-
-                    <li class="list-group-item">
-
-                        🏫
-
-                        Classes créées :
-
-                        <strong>
-
-                            {{ total_classes }}
-
-                        </strong>
-
-                    </li>
-
-                    <li class="list-group-item">
-
-                        💳
-
-                        Paiements :
-
-                        <strong>
-
-                            {{ total_paiements }}
-
-                        </strong>
-
-                    </li>
-
-                    <li class="list-group-item">
-
-                        💰
-
-                        Total encaissé :
-
-                        <strong class="text-success">
-
-                            {{ montant_total }} $
-
-                        </strong>
-
-                    </li>
-
-                </ul>
-
-            </div>
-
-        </div>
-
-    </div>
+<div class="section-card mb-4">
+
+<div class="section-header">
+<h2 class="section-title">
+<i class="bi bi-lightning-charge-fill text-warning me-2"></i>
+Accès rapide
+</h2>
+
+<p class="section-subtitle">
+Les fonctions les plus utilisées
+</p>
+</div>
+
+<div class="p-3">
+<div class="row g-2 g-md-3">
+
+{% for route,icon,label,color in [
+("eleves","bi-people-fill","Élèves","text-primary"),
+("classes","bi-building","Classes","text-success"),
+("paiements","bi-cash-stack","Paiements","text-warning")
+] %}
+
+<div class="col-6 col-md-4 col-xl-2">
+<a href="{{ url_for(route) }}" class="quick-action">
+<i class="bi {{ icon }} {{ color }}"></i>
+<span>{{ label }}</span>
+</a>
+</div>
+
+{% endfor %}
+
+{% if session.get("role")=="Administrateur" %}
+
+<div class="col-6 col-md-4 col-xl-2">
+<a href="{{ url_for('utilisateurs') }}" class="quick-action">
+<i class="bi bi-person-fill-gear text-danger"></i>
+<span>Utilisateurs</span>
+</a>
+</div>
+
+{% endif %}
+
+<div class="col-6 col-md-4 col-xl-2">
+<a href="{{ url_for('rapport_paiements') }}" class="quick-action">
+<i class="bi bi-file-earmark-pdf-fill text-info"></i>
+<span>Rapport PDF</span>
+</a>
+</div>
+
+<div class="col-6 col-md-4 col-xl-2">
+<a href="{{ url_for('export_excel') }}" class="quick-action">
+<i class="bi bi-file-earmark-excel-fill text-success"></i>
+<span>Export Excel</span>
+</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="row g-3 mb-4">
+
+<div class="col-lg-8">
+
+<div class="section-card h-100">
+
+<div class="section-header">
+<h2 class="section-title">
+<i class="bi bi-pie-chart-fill text-primary me-2"></i>
+Vue générale
+</h2>
+
+<p class="section-subtitle">
+Répartition des principaux indicateurs
+</p>
+</div>
+
+<div class="p-3 p-lg-4">
+<div style="height:300px">
+<canvas id="graphiqueDashboard"></canvas>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-4">
+
+<div class="section-card h-100">
+
+<div class="section-header">
+<h2 class="section-title">
+<i class="bi bi-clipboard-data-fill text-success me-2"></i>
+Résumé financier
+</h2>
+
+<p class="section-subtitle">
+Situation actuelle
+</p>
+</div>
+
+<div class="p-3">
+
+<div class="d-flex justify-content-between py-3 border-bottom">
+<span class="text-muted">
+<i class="bi bi-people me-2"></i>Élèves
+</span>
+<strong>{{ total_eleves }}</strong>
+</div>
+
+<div class="d-flex justify-content-between py-3 border-bottom">
+<span class="text-muted">
+<i class="bi bi-building me-2"></i>Classes
+</span>
+<strong>{{ total_classes }}</strong>
+</div>
+
+<div class="d-flex justify-content-between py-3 border-bottom">
+<span class="text-muted">
+<i class="bi bi-credit-card me-2"></i>Paiements
+</span>
+<strong>{{ total_paiements }}</strong>
+</div>
+
+<div class="d-flex justify-content-between py-3 border-bottom">
+<span class="text-muted">
+<i class="bi bi-calendar-day me-2"></i>Aujourd'hui
+</span>
+<strong class="text-success">
+{{ montant_jour|default(0) }} $
+</strong>
+</div>
+
+<div class="d-flex justify-content-between py-3">
+<span class="text-muted">
+<i class="bi bi-wallet2 me-2"></i>Total encaissé
+</span>
+<strong class="text-primary">
+{{ montant_total }} $
+</strong>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="row g-3 mb-4">
+
+<div class="col-lg-7">
+
+<div class="section-card h-100">
+
+<div class="section-header d-flex justify-content-between align-items-center">
+
+<div>
+<h2 class="section-title">
+<i class="bi bi-clock-history text-primary me-2"></i>
+Derniers paiements
+</h2>
+
+<p class="section-subtitle">
+Les dernières opérations enregistrées
+</p>
+</div>
+
+<a href="{{ url_for('paiements') }}"
+   class="btn btn-sm btn-outline-primary rounded-pill">
+Voir tout
+</a>
 
 </div>
 
-<!-- ====================================== -->
-<!-- ALERTES -->
-<!-- ====================================== -->
+<div class="table-responsive">
 
-<div class="card border-0 shadow-lg mb-4">
+{% if derniers_paiements %}
 
-    <div class="card-header bg-warning">
+<table class="table table-modern mb-0">
 
-        <i class="bi bi-exclamation-triangle-fill"></i>
+<thead>
+<tr>
+<th>Reçu</th>
+<th>Élève</th>
+<th>Montant</th>
+<th>Date</th>
+</tr>
+</thead>
 
-        Alertes du système
+<tbody>
 
-    </div>
+{% for p in derniers_paiements %}
 
-    <div class="card-body">
+<tr>
+<td>
+<span class="receipt-badge">
+{{ p.numero_recu }}
+</span>
+</td>
 
-        <div class="alert alert-success">
+<td class="fw-semibold">
+{{ p.eleve.nom }} {{ p.eleve.postnom }}
+</td>
 
-            <i class="bi bi-check-circle-fill"></i>
+<td>
+<strong class="text-success">
+{{ p.montant }} $
+</strong>
+</td>
 
-            La base de données fonctionne correctement.
+<td class="text-muted">
+{{ p.date_paiement.strftime("%d/%m/%Y") }}
+</td>
+</tr>
 
-        </div>
+{% endfor %}
 
-        <div class="alert alert-info">
+</tbody>
+</table>
 
-            <i class="bi bi-info-circle-fill"></i>
+{% else %}
 
-            Pensez à effectuer une sauvegarde régulière.
+<div class="text-center py-5 text-muted">
+<i class="bi bi-receipt fs-1 d-block mb-3"></i>
+Aucun paiement enregistré.
+</div>
 
-        </div>
-
-        <div class="alert alert-warning">
-
-            <i class="bi bi-bell-fill"></i>
-
-            Vérifiez les élèves qui n'ont pas encore payé leurs frais.
-
-        </div>
-
-    </div>
+{% endif %}
 
 </div>
-<!-- ====================================== -->
-<!-- JAVASCRIPT -->
-<!-- ====================================== -->
+</div>
+</div>
+
+<div class="col-lg-5">
+
+<div class="section-card h-100">
+
+<div class="section-header">
+<h2 class="section-title">
+<i class="bi bi-activity text-success me-2"></i>
+Activité récente
+</h2>
+
+<p class="section-subtitle">
+Résumé de l'activité
+</p>
+</div>
+
+<div class="px-3">
+
+{% for icon,color,title,sub,value in [
+("bi-people-fill","icon-blue","Élèves enregistrés","Effectif actuel",total_eleves),
+("bi-building","icon-green","Classes créées","Classes disponibles",total_classes),
+("bi-cash-stack","icon-orange","Paiements","Opérations enregistrées",total_paiements),
+("bi-wallet2","icon-green","Total encaissé","Montant cumulé",montant_total ~ " $")
+] %}
+
+<div class="activity-item">
+
+<div class="activity-icon {{ color }}">
+<i class="bi {{ icon }}"></i>
+</div>
+
+<div class="flex-grow-1">
+<div class="fw-semibold">{{ title }}</div>
+<small class="text-muted">{{ sub }}</small>
+</div>
+
+<strong>{{ value }}</strong>
+
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="section-card mb-4">
+
+<div class="section-header">
+<h2 class="section-title">
+<i class="bi bi-shield-check text-success me-2"></i>
+État du système
+</h2>
+
+<p class="section-subtitle">
+Informations importantes
+</p>
+</div>
+
+<div class="p-3">
+
+<div class="alert alert-success alert-modern">
+<i class="bi bi-check-circle-fill me-2"></i>
+La base de données fonctionne correctement.
+</div>
+
+<div class="alert alert-info alert-modern">
+<i class="bi bi-info-circle-fill me-2"></i>
+Pensez à effectuer une sauvegarde régulière.
+</div>
+
+<div class="alert alert-warning alert-modern mb-0">
+<i class="bi bi-bell-fill me-2"></i>
+Vérifiez les élèves qui n'ont pas encore payé leurs frais.
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
 
-const ctx = document.getElementById("graphiqueDashboard");
+    const canvas = document.getElementById("graphiqueDashboard");
 
-new Chart(ctx,{
+    if(canvas){
 
-    type:"doughnut",
+        new Chart(canvas, {
+            type:"doughnut",
 
-    data:{
+            data:{
+                labels:["Élèves","Classes","Paiements"],
 
-        labels:[
+                datasets:[{
+                    data:[
+                        {{ total_eleves|default(0) }},
+                        {{ total_classes|default(0) }},
+                        {{ total_paiements|default(0) }}
+                    ],
 
-            "Élèves",
+                    backgroundColor:[
+                        "#2563eb",
+                        "#16a34a",
+                        "#f59e0b"
+                    ],
 
-            "Classes",
+                    borderColor:
+                        document.body.classList.contains("dark-mode")
+                            ? "#111827"
+                            : "#ffffff",
 
-            "Paiements"
+                    borderWidth:4,
+                    hoverOffset:8
+                }]
+            },
 
-        ],
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                cutout:"64%",
 
-        datasets:[{
+                plugins:{
+                    legend:{
+                        position:"bottom",
 
-            data:[
+                        labels:{
+                            usePointStyle:true,
+                            padding:20,
 
-                {{ total_eleves }},
-
-                {{ total_classes }},
-
-                {{ total_paiements }}
-
-            ],
-
-            backgroundColor:[
-
-                "#0d6efd",
-
-                "#198754",
-
-                "#ffc107"
-
-            ],
-
-            borderWidth:2
-
-        }]
-
-    },
-
-    options:{
-
-        responsive:true,
-
-        plugins:{
-
-            legend:{
-
-                position:"bottom"
-
+                            color:
+                                document.body.classList.contains("dark-mode")
+                                    ? "#e5e7eb"
+                                    : "#334155"
+                        }
+                    }
+                }
             }
-
-        }
+        });
 
     }
 
 });
-
-// ======================================
-// Animation des cartes
-// ======================================
-
-document.querySelectorAll(".card").forEach(function(card){
-
-    card.addEventListener("mouseenter",function(){
-
-        this.style.transform="translateY(-6px)";
-
-        this.style.transition=".3s";
-
-        this.style.boxShadow="0 15px 30px rgba(0,0,0,.15)";
-
-    });
-
-    card.addEventListener("mouseleave",function(){
-
-        this.style.transform="translateY(0px)";
-
-        this.style.boxShadow="";
-
-    });
-
-});
-
-// ======================================
-// Actualisation automatique toutes les
-// 5 minutes
-// ======================================
-
-setTimeout(function(){
-
-    location.reload();
-
-},300000);
-
 </script>
 
 {% endblock %}

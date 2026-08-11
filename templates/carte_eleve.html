@@ -810,15 +810,19 @@
 
                 <div class="header-content">
 
-                    <img
-                        src="{{ url_for('static', filename='images/logo.png') }}"
-                        class="school-logo"
-                        alt="Logo du Complexe Scolaire La Suisse">
-
-                    <div class="school-info">
+                    {% if param and param.logo %}
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + param.logo) }}"
+                            class="school-logo"
+                            alt="Logo de {{ param.nom_ecole }}">
+                    {% else %}
+                        <div class="school-logo logo-placeholder">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                    {% endif %}
 
                         <div class="school-name">
-                            Complexe Scolaire La Suisse
+                            {{ param.nom_ecole if param and param.nom_ecole else "SchoolPay Pro" }}
                         </div>
 
                         <div class="school-subtitle">

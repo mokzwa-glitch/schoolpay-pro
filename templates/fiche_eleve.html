@@ -97,17 +97,17 @@
 
                         <tr>
                             <th>Nom du parent</th>
-                            <td>{{ eleve.nom_parent }}</td>
+                            <td>{{ eleve.nom_parent or "Non renseigné" }}</td>
                         </tr>
 
                         <tr>
-                            <th>Téléphone parent</th>
-                            <td>{{ eleve.telephone_parent }}</td>
+                            <th>Téléphone du parent</th>
+                            <td>{{ eleve.telephone_parent or "Non renseigné" }}</td>
                         </tr>
 
                         <tr>
-                            <th>Profession parent</th>
-                            <td>{{ eleve.profession_parent }}</td>
+                            <th>Profession du parent</th>
+                            <td>{{ eleve.profession_parent or "Non renseignée" }}</td>
                         </tr>
 
                         <tr>
