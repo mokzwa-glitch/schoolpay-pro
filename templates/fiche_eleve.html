@@ -4,162 +4,570 @@
 
 {% block content %}
 
-<div class="container">
+<style>
+/* =========================================================
+   FICHE ELEVE - ECRAN + MODE SOMBRE
+   Le thème est piloté par body.dark-mode dans base.html.
+   ========================================================= */
 
-    <div class="card shadow mt-4">
+.student-page{
+    --sp-bg:#ffffff;
+    --sp-surface:#f7f9fc;
+    --sp-border:#dfe5ee;
+    --sp-text:#172033;
+    --sp-muted:#667085;
+    --sp-primary:#0d6efd;
+    --sp-primary-dark:#084298;
+    max-width:1250px;
+    margin:24px auto;
+    padding:0 10px 35px;
+}
 
-        <div class="card-header bg-primary text-white">
+.student-card{
+    background:var(--sp-bg);
+    color:var(--sp-text);
+    border:1px solid var(--sp-border);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 12px 35px rgba(20,35,60,.10);
+}
 
-            <h3>
-                <i class="bi bi-person-badge-fill"></i>
-                Fiche de l'élève
-            </h3>
+.student-card-header{
+    padding:22px 28px;
+    background:linear-gradient(135deg,var(--sp-primary),var(--sp-primary-dark));
+    color:#fff;
+}
 
-        </div>
+.student-card-header .label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.8px;
+    text-transform:uppercase;
+    opacity:.85;
+}
 
-        <div class="card-body">
+.student-card-header h2{
+    margin:0;
+    font-size:28px;
+    font-weight:800;
+    color:#fff;
+}
 
-            <div class="row">
+.student-card-header p{
+    margin:5px 0 0;
+    font-size:13px;
+    opacity:.9;
+}
 
-                <div class="col-md-3 text-center">
+.student-card-body{
+    padding:28px;
+}
+
+.student-profile{
+    height:100%;
+    background:var(--sp-surface);
+    border:1px solid var(--sp-border);
+    border-radius:15px;
+    padding:22px 16px;
+    text-align:center;
+}
+
+.student-photo{
+    width:205px;
+    height:245px;
+    max-width:100%;
+    object-fit:cover;
+    display:block;
+    margin:0 auto 16px;
+    border-radius:12px;
+    border:4px solid var(--sp-bg);
+    outline:1px solid var(--sp-border);
+    box-shadow:0 8px 22px rgba(20,35,60,.14);
+}
+
+.student-name{
+    color:var(--sp-text);
+    font-size:20px;
+    font-weight:800;
+    text-transform:uppercase;
+    margin:0;
+}
+
+.student-matricule{
+    display:inline-block;
+    margin-top:8px;
+    padding:6px 12px;
+    border-radius:20px;
+    background:rgba(13,110,253,.12);
+    color:var(--sp-primary);
+    font-size:12px;
+    font-weight:700;
+}
+
+.info-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:22px 0 10px;
+    color:var(--sp-primary);
+    font-size:14px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.info-title:after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:var(--sp-border);
+}
+
+.student-info-table{
+    width:100%;
+    margin:0 !important;
+    border-collapse:separate;
+    border-spacing:0;
+    border:1px solid var(--sp-border);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--sp-bg);
+    color:var(--sp-text);
+}
+
+.student-info-table th,
+.student-info-table td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--sp-border);
+    vertical-align:middle;
+}
+
+.student-info-table tr:last-child th,
+.student-info-table tr:last-child td{
+    border-bottom:0;
+}
+
+.student-info-table th{
+    width:38%;
+    background:var(--sp-surface);
+    color:var(--sp-text);
+    font-size:12px;
+    font-weight:750;
+}
+
+.student-info-table td{
+    background:var(--sp-bg);
+    color:var(--sp-text);
+    font-size:13px;
+    font-weight:500;
+}
+
+.student-actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid var(--sp-border);
+}
+
+.student-actions .btn{
+    min-width:130px;
+    border-radius:9px;
+    font-weight:650;
+    padding:9px 16px;
+}
+
+/* =========================
+   MODE SOMBRE
+   ========================= */
+
+body.dark-mode .student-page{
+    --sp-bg:#111827;
+    --sp-surface:#182235;
+    --sp-border:#334155;
+    --sp-text:#f1f5f9;
+    --sp-muted:#cbd5e1;
+}
+
+body.dark-mode .student-card{
+    box-shadow:0 14px 40px rgba(0,0,0,.35);
+}
+
+body.dark-mode .student-photo{
+    border-color:#182235;
+    outline-color:#475569;
+}
+
+body.dark-mode .student-info-table th{
+    background:#1e293b;
+    color:#f1f5f9;
+}
+
+body.dark-mode .student-info-table td{
+    background:#111827;
+    color:#f1f5f9;
+}
+
+body.dark-mode .student-profile{
+    background:#182235;
+}
+
+/* =========================================================
+   IMPRESSION : UNE SEULE PAGE A4
+   ========================================================= */
+
+@media print{
+    @page{
+        size:A4 portrait;
+        margin:6mm;
+    }
+
+    html,
+    body{
+        background:#fff !important;
+        color:#111 !important;
+        margin:0 !important;
+        padding:0 !important;
+    }
+
+    /* On cache toute l'interface de base */
+    body *{
+        visibility:hidden !important;
+    }
+
+    .student-print,
+    .student-print *{
+        visibility:visible !important;
+    }
+
+    .student-print{
+        position:absolute !important;
+        left:0 !important;
+        top:0 !important;
+        width:100% !important;
+        height:283mm !important;
+        overflow:hidden !important;
+    }
+
+    .student-page{
+        width:100% !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:0 !important;
+
+        --sp-bg:#fff !important;
+        --sp-surface:#f4f6f8 !important;
+        --sp-border:#9aa5b1 !important;
+        --sp-text:#111827 !important;
+        --sp-primary:#084298 !important;
+    }
+
+    .student-card{
+        width:100% !important;
+        height:auto !important;
+        margin:0 !important;
+        border:1px solid #7b8794 !important;
+        border-radius:5px !important;
+        box-shadow:none !important;
+        overflow:hidden !important;
+        background:#fff !important;
+        color:#111 !important;
+    }
+
+    .student-card-header{
+        padding:10px 15px !important;
+        background:#0d6efd !important;
+        color:#fff !important;
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+    .student-card-header .label{
+        font-size:7px !important;
+    }
+
+    .student-card-header h2{
+        font-size:18px !important;
+        line-height:1.15 !important;
+    }
+
+    .student-card-header p{
+        font-size:8px !important;
+        margin-top:2px !important;
+    }
+
+    .student-card-body{
+        padding:10px !important;
+    }
+
+    .student-card-body > .row{
+        --bs-gutter-x:.7rem !important;
+        --bs-gutter-y:.5rem !important;
+    }
+
+    .student-profile{
+        background:#f4f6f8 !important;
+        border:1px solid #b5bec9 !important;
+        border-radius:6px !important;
+        padding:8px !important;
+        box-shadow:none !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+    }
+
+    .student-photo{
+        width:105px !important;
+        height:125px !important;
+        margin:0 auto 7px !important;
+        border:2px solid #fff !important;
+        outline:1px solid #9aa5b1 !important;
+        box-shadow:none !important;
+    }
+
+    .student-name{
+        color:#111 !important;
+        font-size:11px !important;
+        line-height:1.15 !important;
+    }
+
+    .student-matricule{
+        margin-top:4px !important;
+        padding:3px 7px !important;
+        font-size:7px !important;
+        background:#e8f1ff !important;
+        color:#084298 !important;
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+    .info-title{
+        margin:8px 0 4px !important;
+        font-size:8px !important;
+        line-height:1 !important;
+        color:#084298 !important;
+    }
+
+    .info-title:after{
+        background:#c4ccd5 !important;
+    }
+
+    .student-info-table{
+        border:1px solid #9aa5b1 !important;
+        border-radius:4px !important;
+        background:#fff !important;
+        color:#111 !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+    }
+
+    .student-info-table th,
+    .student-info-table td{
+        padding:4px 6px !important;
+        border-bottom:1px solid #c4ccd5 !important;
+        line-height:1.05 !important;
+        font-size:7.5px !important;
+        color:#111 !important;
+        background:#fff !important;
+    }
+
+    .student-info-table th{
+        width:36% !important;
+        background:#f0f2f5 !important;
+        font-weight:700 !important;
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+    .student-actions{
+        display:none !important;
+    }
+
+    .student-print .col-lg-4{
+        width:30% !important;
+        flex:0 0 30% !important;
+    }
+
+    .student-print .col-lg-8{
+        width:70% !important;
+        flex:0 0 70% !important;
+    }
+
+    .student-print .col-lg-4,
+    .student-print .col-lg-8{
+        padding-left:5px !important;
+        padding-right:5px !important;
+    }
+
+    .student-print a{
+        color:#111 !important;
+        text-decoration:none !important;
+    }
+
+    /* Évite les coupures de tableaux */
+    .student-info-table tr{
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+    }
+}
+
+@media(max-width:767px){
+    .student-page{
+        margin:10px auto;
+        padding:0 5px 20px;
+    }
+
+    .student-card-body{
+        padding:16px;
+    }
+
+    .student-card-header{
+        padding:18px;
+    }
+
+    .student-card-header h2{
+        font-size:22px;
+    }
+
+    .student-photo{
+        width:170px;
+        height:205px;
+    }
+
+    .student-info-table th{
+        width:42%;
+    }
+
+    .student-info-table th,
+    .student-info-table td{
+        padding:10px;
+        font-size:12px;
+    }
+}
+</style>
+
+<div class="student-print">
+<div class="student-page">
+<div class="student-card">
+
+    <div class="student-card-header">
+        <div class="label">SchoolPay Pro 2.0</div>
+        <h2>
+            <i class="bi bi-person-vcard-fill me-2"></i>
+            Fiche de l'élève
+        </h2>
+        <p>Informations administratives et scolaires</p>
+    </div>
+
+    <div class="student-card-body">
+
+        <div class="row g-4">
+
+            <div class="col-lg-4">
+                <div class="student-profile">
 
                     {% if eleve.photo %}
-
                     <img
                         src="{{ url_for('static', filename='uploads/' + eleve.photo) }}"
-                        class="img-thumbnail"
-                        width="180">
-
+                        class="student-photo"
+                        alt="Photo de {{ eleve.nom }}">
                     {% else %}
-
                     <img
                         src="{{ url_for('static', filename='images/avatar.png') }}"
-                        class="img-thumbnail"
-                        width="180">
-
+                        class="student-photo"
+                        alt="Photo non disponible">
                     {% endif %}
 
-                </div>
+                    <h3 class="student-name">
+                        {{ eleve.nom }} {{ eleve.postnom }} {{ eleve.prenom }}
+                    </h3>
 
-                <div class="col-md-9">
-
-                    <table class="table table-bordered">
-
-                        <tr>
-                            <th>Matricule</th>
-                            <td>{{ eleve.matricule }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Nom</th>
-                            <td>{{ eleve.nom }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Postnom</th>
-                            <td>{{ eleve.postnom }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Prénom</th>
-                            <td>{{ eleve.prenom }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Sexe</th>
-                            <td>{{ eleve.sexe }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Date de naissance</th>
-                            <td>{{ eleve.date_naissance }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Lieu de naissance</th>
-                            <td>{{ eleve.lieu_naissance }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Adresse</th>
-                            <td>{{ eleve.adresse }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Téléphone</th>
-                            <td>{{ eleve.telephone }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Email</th>
-                            <td>{{ eleve.email }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Nom du parent</th>
-                            <td>{{ eleve.nom_parent or "Non renseigné" }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Téléphone du parent</th>
-                            <td>{{ eleve.telephone_parent or "Non renseigné" }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Profession du parent</th>
-                            <td>{{ eleve.profession_parent or "Non renseignée" }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Classe</th>
-                            <td>{{ eleve.classe.nom }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Date d'inscription</th>
-                            <td>{{ eleve.date_inscription.strftime('%d/%m/%Y') if eleve.date_inscription else '' }}</td>
-                        </tr>
-
-                    </table>
+                    <span class="student-matricule">
+                        <i class="bi bi-person-badge me-1"></i>
+                        {{ eleve.matricule }}
+                    </span>
 
                 </div>
-
             </div>
 
-            <hr>
+            <div class="col-lg-8">
 
-            <div class="text-center">
+                <div class="info-title">
+                    <i class="bi bi-person-lines-fill"></i>
+                    Informations personnelles
+                </div>
 
-                <a href="{{ url_for('eleves') }}" class="btn btn-secondary">
+                <table class="student-info-table">
+                    <tbody>
+                        <tr><th>Matricule</th><td><strong>{{ eleve.matricule }}</strong></td></tr>
+                        <tr><th>Nom</th><td>{{ eleve.nom }}</td></tr>
+                        <tr><th>Postnom</th><td>{{ eleve.postnom }}</td></tr>
+                        <tr><th>Prénom</th><td>{{ eleve.prenom }}</td></tr>
+                        <tr><th>Sexe</th><td>{{ eleve.sexe }}</td></tr>
+                        <tr><th>Date de naissance</th><td>{{ eleve.date_naissance }}</td></tr>
+                        <tr><th>Lieu de naissance</th><td>{{ eleve.lieu_naissance }}</td></tr>
+                    </tbody>
+                </table>
 
-                    <i class="bi bi-arrow-left"></i>
+                <div class="info-title">
+                    <i class="bi bi-telephone-fill"></i>
+                    Coordonnées
+                </div>
 
-                    Retour
-
-                </a>
-
-                <a href="{{ url_for('modifier_eleve', id=eleve.id) }}" class="btn btn-warning">
-
-                    <i class="bi bi-pencil-square"></i>
-
-                    Modifier
-
-                </a>
-
-                <button class="btn btn-primary" onclick="window.print()">
-
-                    <i class="bi bi-printer"></i>
-
-                    Imprimer
-
-                </button>
+                <table class="student-info-table">
+                    <tbody>
+                        <tr><th>Adresse</th><td>{{ eleve.adresse or "Non renseignée" }}</td></tr>
+                        <tr><th>Téléphone</th><td>{{ eleve.telephone or "Non renseigné" }}</td></tr>
+                        <tr><th>Email</th><td>{{ eleve.email or "Non renseigné" }}</td></tr>
+                    </tbody>
+                </table>
 
             </div>
+        </div>
 
+        <div class="info-title">
+            <i class="bi bi-people-fill"></i>
+            Parent / tuteur
+        </div>
+
+        <table class="student-info-table">
+            <tbody>
+                <tr><th>Nom du parent</th><td>{{ eleve.nom_parent or "Non renseigné" }}</td></tr>
+                <tr><th>Téléphone du parent</th><td>{{ eleve.telephone_parent or "Non renseigné" }}</td></tr>
+                <tr><th>Profession du parent</th><td>{{ eleve.profession_parent or "Non renseignée" }}</td></tr>
+            </tbody>
+        </table>
+
+        <div class="info-title">
+            <i class="bi bi-mortarboard-fill"></i>
+            Informations scolaires
+        </div>
+
+        <table class="student-info-table">
+            <tbody>
+                <tr><th>Classe</th><td>{{ eleve.classe.nom if eleve.classe else "Non renseignée" }}</td></tr>
+                <tr><th>Date d'inscription</th><td>{{ eleve.date_inscription.strftime('%d/%m/%Y') if eleve.date_inscription else 'Non renseignée' }}</td></tr>
+            </tbody>
+        </table>
+
+        <div class="student-actions">
+            <a href="{{ url_for('eleves') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Retour
+            </a>
+
+            <a href="{{ url_for('modifier_eleve', id=eleve.id) }}" class="btn btn-warning">
+                <i class="bi bi-pencil-square me-1"></i>Modifier
+            </a>
+
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer-fill me-1"></i>Imprimer
+            </button>
         </div>
 
     </div>
-
+</div>
+</div>
 </div>
 
 {% endblock %}
